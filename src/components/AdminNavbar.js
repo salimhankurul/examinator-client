@@ -54,11 +54,11 @@ function MyCard() {
 }
 
 function Header() {
-  const { logOut } = useAuth()
+  const { logout } = useAuth()
 
   function handleLogOut() {
     console.log("logOut button clicked");
-    logOut()
+    logout()
   }
 
   return (

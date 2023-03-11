@@ -7,33 +7,27 @@ import "../assets/css/login.css";
 import { useAuth } from "../auth";
 
 const LoginPage = () => {
-  const form = useRef();
-  const checkBtn = useRef();
-
   const { login } = useAuth();
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
 
-  const onlick = (e) => {
-    console.log("login button clicked");
-    login("salimhan@retter.io", "123456");
+  const handleLogin = (e) => {
+    setLoading(true);
+    login(email, password);
+    setLoading(false);
+  };
+
+  const onChangeEmail = (e) => {
+    const email = e.target.value;
+    setEmail(email);
   };
 
   const onChangePassword = (e) => {
-    const password = e.target.value;
-    setPassword(password);
+    const pass = e.target.value;
+    setPassword(pass);
   };
 
-  const handleLogin = (e) => {
-    e.preventDefault();
-
-    setMessage("");
-    setLoading(true);
-
-    form.current.validateAll();
-  };
 
   return (
     <section className="vh-100">
@@ -62,6 +56,7 @@ const LoginPage = () => {
                     id="form3Example3"
                     className="form-control form-control-lg"
                     placeholder="Enter a valid email address"
+                    onChange={onChangeEmail}
                   />
                 </div>
 
@@ -75,22 +70,11 @@ const LoginPage = () => {
                     id="form3Example4"
                     className="form-control form-control-lg"
                     placeholder="Enter password"
+                    onChange={onChangePassword}
                   />
                 </div>
 
-                <div className="d-flex justify-content-between align-items-center">
-                  {/* <!-- Checkbox --> */}
-                  <div className="form-check mb-0">
-                    <input
-                      className="form-check-input me-2"
-                      type="checkbox"
-                      value=""
-                      id="form2Example3"
-                    />
-                    <label className="form-check-label" htmlFor="form2Example3">
-                      Remember me
-                    </label>
-                  </div>
+                <div className="d-flex justify-content-between align-items-center">         
                   <Link to="/reset-password" className="text-body">
                     Forgot password?
                   </Link>
@@ -100,9 +84,9 @@ const LoginPage = () => {
                   <Button
                     type="button"
                     className="btn btn-primary btn-lg"
-                    onClick={onlick}
+                    onClick={handleLogin}
                   >
-                    Login
+                    { loading ? 'Please Wait...' : 'Login' }
                   </Button>
                   <p className="small fw-bold mt-2 pt-1 mb-0">
                     Don't have an account?{" "}

@@ -16,18 +16,35 @@ import ProfileLayout from "./pages/UserProfile";
 
 import { AuthProvider } from "./auth";
 
+import { useAuth } from "./auth";
+import jwt from 'jwt-decode' // import dependency
+
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 function PrivateRoute({ children }) {
+  const accessToken = localStorage.getItem("accessToken");
 
-  const currentUser = sessionStorage.getItem("user");
+  if (!accessToken) {
+    return <Navigate to="/login" />;
+  }
 
-  console.log("sessionStorage user", currentUser);
+  console.log("PrivateRoute::accessToken", accessToken);
 
-  return currentUser ? children : <Navigate to="/login" />;
+  const { userData, setUserData, setAccessToken } = useAuth()
+
+  if (!userData) {
+    setUserData(jwt(accessToken))
+    setAccessToken(accessToken)
+  }
+
+  console.log("userData", userData);
+
+  return children
 }
 
 function App() {
+
   return (
     <BrowserRouter>
     <AuthProvider>

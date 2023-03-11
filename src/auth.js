@@ -1,69 +1,77 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import jwt from 'jwt-decode' // import dependency
 
-const AuthContext = React.createContext()
+import { loginRequest, logoutRequest } from "api";
+
+const AuthContext = React.createContext();
 
 export function useAuth() {
-    console.log("useAuth");
-    return useContext(AuthContext)
+  return useContext(AuthContext);
 }
 
-export function AuthProvider( {children} ) {
-    const [currentUser, setCurrentUser] = useState()
-    const navigate = useNavigate();
-    async function signup(email, password) {
-    }
+export function AuthProvider({ children }) {
+  const [accessToken, setAccessToken] = useState();
+  const [userData, setUserData] = useState();
+  
+  const navigate = useNavigate();
 
-    function verifyEmail() {   
-    }
-
-    function login (email, password) {   
-        console.log("login from auth");
-        setCurrentUser(email)
-        
-        sessionStorage.setItem("user", email);
-        
-        navigate("/")
-    }
+  async function login(email, password) {
+    const { success, error } = await loginRequest({ email, password });
     
-    function logOut() { 
-        console.log("logout from auth") 
-        setCurrentUser(null)
-        sessionStorage.clear();
-        navigate("/login")
-    }
+    if (error) {
+      console.log("login request error", success);
+      alert(error.message);
+      return;
+    } 
+
+    const newUserData = jwt(success.accessToken);
+    setAccessToken(success.accessToken)
+    setUserData(newUserData);
     
-    function resetPassword(email) {     
+    localStorage.setItem("accessToken", success.accessToken);
+    localStorage.setItem("refreshToken", success.refreshToken);
+    navigate("/"); 
+  }
+
+  async function logout() { 
+    if (!userData) {
+      alert("You are not logged in");
+      return
     }
 
-    function updateEmail(email) {
-    }
-
-    function updatePassword(password) {
-    }
-
-    function redir() {
-        window.location.href = "/login"
-    }
-
+    const { success, error } = await logoutRequest({ userId: userData.userId, accessToken });
     
-    useEffect(() => { 
-    }, [])
+    if (error) {
+      console.log("logout request error", success);
+      alert(error.message);
+      return;
+    } 
+
+    console.log("logout from auth");
+    setAccessToken(null)
+    setUserData(null);
+    localStorage.clear();
+
+    navigate("/login");
+  }
+
+  // function redir() {
+  //   window.location.href = "/login";
+  // }
+
+  useEffect(() => {}, []);
+
+  const value = {
+    accessToken,
+    userData,
     
+    login,
+    logout,
 
-    const value = {
-        currentUser,
-        login,
-        signup,
-        logOut,
-        resetPassword,
-        updateEmail,
-        updatePassword
-    }
+    setUserData,
+    setAccessToken,
+  };
 
-  return (
-    <AuthContext.Provider value={value}>
-         { children } 
-    </AuthContext.Provider>
-  )
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

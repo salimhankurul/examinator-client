@@ -12,9 +12,9 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     setLoading(true);
-    login(email, password);
+    await login(email, password);
     setLoading(false);
   };
 

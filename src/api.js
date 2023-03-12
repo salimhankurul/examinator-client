@@ -39,3 +39,48 @@ export const logoutRequest = async ({ userId, accessToken }) => {
     return { error: error.response.data };
   }
 };
+
+export const updateProfileRequest = async ({ accessToken, body }) => {
+  try {
+
+    console.log("updateProfileRequest input", { body, accessToken });
+    
+    const request = await axios.post(`${EXAM_API_URL}/SET_PROFILE`, 
+    {
+      ...body,
+    },
+    {
+      headers: {
+        '_token': accessToken
+      }
+    }
+    );
+    console.log("updateProfileRequest response",  request.data);
+    return { success: request.data };
+  } catch (error) {
+    return { error: error.response.data };
+  }
+};
+
+export const getProfileRequest = async ({ accessToken }) => {
+  try {
+
+    console.log("getProfileRequest input", { accessToken });
+    
+    const request = await axios.post(`${EXAM_API_URL}/GET_PROFILE`, {},
+    {
+      headers: {
+        '_token': accessToken
+      }
+    }
+    );
+    console.log(JSON.stringify(request))
+    console.log("getProfileRequest response",  request.data);
+    return { success: request.data };
+  } catch (error) {
+    console.log("getProfileRequest error")
+    console.log(JSON.stringify(error))
+    return { error: error.response };
+  }
+};
+

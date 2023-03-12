@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useState, useEffect } from "react";
 import { useLocation, Route, Switch, Routes } from "react-router-dom";
 // react-bootstrap components
 import {
@@ -14,6 +14,7 @@ import {
   Form,
   OverlayTrigger,
   Tooltip,
+  ToggleButton,
 } from "react-bootstrap";
 import ChartistGraph from "react-chartist";
 
@@ -25,211 +26,30 @@ import routes from "routes.js";
 
 import sidebarImage from "assets/img/sidebar-3.jpg";
 
-function content() {
-  return (
-    <>
-      <Container fluid>
-        <Row>
-          <Col md="8">
-            <Card>
-              <Card.Header>
-                <Card.Title as="h4">Edit Profile</Card.Title>
-              </Card.Header>
-              <Card.Body>
-                <Form>
-                  <Row>
-                    <Col className="pr-1" md="5">
-                      <Form.Group>
-                        <label>Company (disabled)</label>
-                        <Form.Control
-                          defaultValue="Creative Code Inc."
-                          disabled
-                          placeholder="Company"
-                          type="text"
-                        ></Form.Control>
-                      </Form.Group>
-                    </Col>
-                    <Col className="px-1" md="3">
-                      <Form.Group>
-                        <label>Username</label>
-                        <Form.Control
-                          defaultValue="michael23"
-                          placeholder="Username"
-                          type="text"
-                        ></Form.Control>
-                      </Form.Group>
-                    </Col>
-                    <Col className="pl-1" md="4">
-                      <Form.Group>
-                        <label htmlFor="exampleInputEmail1">
-                          Email address
-                        </label>
-                        <Form.Control
-                          placeholder="Email"
-                          type="email"
-                        ></Form.Control>
-                      </Form.Group>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col className="pr-1" md="6">
-                      <Form.Group>
-                        <label>First Name</label>
-                        <Form.Control
-                          defaultValue="Mike"
-                          placeholder="Company"
-                          type="text"
-                        ></Form.Control>
-                      </Form.Group>
-                    </Col>
-                    <Col className="pl-1" md="6">
-                      <Form.Group>
-                        <label>Last Name</label>
-                        <Form.Control
-                          defaultValue="Andrew"
-                          placeholder="Last Name"
-                          type="text"
-                        ></Form.Control>
-                      </Form.Group>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col md="12">
-                      <Form.Group>
-                        <label>Address</label>
-                        <Form.Control
-                          defaultValue="Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09"
-                          placeholder="Home Address"
-                          type="text"
-                        ></Form.Control>
-                      </Form.Group>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col className="pr-1" md="4">
-                      <Form.Group>
-                        <label>City</label>
-                        <Form.Control
-                          defaultValue="Mike"
-                          placeholder="City"
-                          type="text"
-                        ></Form.Control>
-                      </Form.Group>
-                    </Col>
-                    <Col className="px-1" md="4">
-                      <Form.Group>
-                        <label>Country</label>
-                        <Form.Control
-                          defaultValue="Andrew"
-                          placeholder="Country"
-                          type="text"
-                        ></Form.Control>
-                      </Form.Group>
-                    </Col>
-                    <Col className="pl-1" md="4">
-                      <Form.Group>
-                        <label>Postal Code</label>
-                        <Form.Control
-                          placeholder="ZIP Code"
-                          type="number"
-                        ></Form.Control>
-                      </Form.Group>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col md="12">
-                      <Form.Group>
-                        <label>About Me</label>
-                        <Form.Control
-                          cols="80"
-                          defaultValue="Lamborghini Mercy, Your chick she so thirsty, I'm in
-                          that two seat Lambo."
-                          placeholder="Here can be your description"
-                          rows="4"
-                          as="textarea"
-                        ></Form.Control>
-                      </Form.Group>
-                    </Col>
-                  </Row>
-                  <Button
-                    className="btn-fill pull-right"
-                    type="submit"
-                    variant="info"
-                  >
-                    Update Profile
-                  </Button>
-                  <div className="clearfix"></div>
-                </Form>
-              </Card.Body>
-            </Card>
-          </Col>
-          <Col md="4">
-            <Card className="card-user">
-              <div className="card-image">
-                <img
-                  alt="..."
-                  src={require("assets/img/photo-1431578500526-4d9613015464.jpeg")}
-                ></img>
-              </div>
-              <Card.Body>
-                <div className="author">
-                  <a href="#pablo" onClick={(e) => e.preventDefault()}>
-                    <img
-                      alt="..."
-                      className="avatar border-gray"
-                      src={require("assets/img/faces/face-3.jpg")}
-                    ></img>
-                    <h5 className="title">Mike Andrew</h5>
-                  </a>
-                  <p className="description">michael24</p>
-                </div>
-                <p className="description text-center">
-                  "Lamborghini Mercy <br></br>
-                  Your chick she so thirsty <br></br>
-                  I'm in that two seat Lambo"
-                </p>
-              </Card.Body>
-              <hr></hr>
-              <div className="button-container mr-auto ml-auto">
-                <Button
-                  className="btn-simple btn-icon"
-                  href="#pablo"
-                  onClick={(e) => e.preventDefault()}
-                  variant="link"
-                >
-                  <i className="fab fa-facebook-square"></i>
-                </Button>
-                <Button
-                  className="btn-simple btn-icon"
-                  href="#pablo"
-                  onClick={(e) => e.preventDefault()}
-                  variant="link"
-                >
-                  <i className="fab fa-twitter"></i>
-                </Button>
-                <Button
-                  className="btn-simple btn-icon"
-                  href="#pablo"
-                  onClick={(e) => e.preventDefault()}
-                  variant="link"
-                >
-                  <i className="fab fa-google-plus-square"></i>
-                </Button>
-              </div>
-            </Card>
-          </Col>
-        </Row>
-      </Container>
-    </>
-  );
-}
+import Select from 'react-select'
+
+import { useAuth } from "../auth";
+import { updateProfileRequest, getProfileRequest } from "api";
+
+const options = [
+  { value: 'chocolate', label: 'Chocolate' },
+  { value: 'strawberry', label: 'Strawberry' },
+  { value: 'vanilla', label: 'Vanilla' }
+]
 
 function main() {
+  const { userData, accessToken } = useAuth();
+
   const [image, setImage] = React.useState(sidebarImage);
   const [color, setColor] = React.useState("black");
   const [hasImage, setHasImage] = React.useState(true);
   const location = useLocation();
   const mainPanel = React.useRef(null);
+  
+  const [firstName, setFirstName] = React.useState("Loading...");
+  const [lastName, setLastName] = React.useState("Loading...");
+  const [courses, setCourses] = React.useState([]);
+
   React.useEffect(() => {
     document.documentElement.scrollTop = 0;
     document.scrollingElement.scrollTop = 0;
@@ -243,14 +63,140 @@ function main() {
       element.parentNode.removeChild(element);
     }
   }, [location]);
+
+  const onUpdateProfile = async (e) => {
+      const body = {
+          firstName: firstName,
+          lastName: lastName,
+          courses: courses,
+      }
+
+      const { success, error } = await updateProfileRequest({ body, accessToken });
+
+      if (error) {
+        console.log("updateProfileRequest request error", success);
+        alert(error.message);
+      } 
+  }
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const { success, error } = await getProfileRequest({ accessToken });
+      if (error) {
+        console.log("getProfileRequest error", error);
+        alert(error.message);
+      } 
+      console.log("getProfileRequest", success);
+
+      setLastName(success.data.lastName);
+      setFirstName(success.data.firstName);
+      setCourses(success.data.courses);
+
+    };
+    fetchData();
+  }, []);
+
   return (
     <>
       <div className="wrapper">
         <Sidebar color={color} image={hasImage ? image : ""} routes={routes} />
         <div className="main-panel" ref={mainPanel}>
           <AdminNavbar />
-          <div className="content"> 
-           { content(routes) }
+          <div className="content">
+            <Card className="card-user">
+              <Container fluid>
+                <div className="card-image">
+                  <img
+                    alt="..."
+                    src={require("assets/img/photo-1431578500526-4d9613015464.jpeg")}
+                  ></img>
+                </div>
+
+                <Card.Body>
+                  <Row xs={2}>
+                    <Col md="8">
+                      <Form>
+                        <Row>
+                          <Col className="pr-1" md="5">
+                            <Form.Group>
+                              <label>Email</label>
+                              <Form.Control
+                                defaultValue="salimhan@retter.io"
+                                disabled
+                                placeholder="Company"
+                                type="text"
+                              ></Form.Control>
+                            </Form.Group>
+                          </Col>
+                          <Col className="px-1" md="3">
+                            <Form.Group>
+                            <label> First Name</label>
+                              <Form.Control
+                                value={ firstName }
+                                placeholder="first-name"
+                                type="text"
+                                onChange={(e) => setFirstName(e.target.value)}
+                              ></Form.Control>
+                            </Form.Group>
+                          </Col>
+                          <Col className="px-1" md="3">
+                            <Form.Group>
+                              <label> Last Name</label>
+                              <Form.Control
+                                value={lastName}
+                                placeholder="last-name"
+                                type="text"
+                                onChange={(e) => setLastName(e.target.value)}
+                              ></Form.Control>
+                            </Form.Group>
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col>
+                            <label>Subscribed Courses</label>
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col>
+                          <Select
+                          value={courses.map(i => ({ value: i, label: i }))}
+                          isMulti
+                          options={options}
+                          onChange={(choices) => setCourses(choices.map(i => i.value))}
+                          />
+                          </Col>
+                        </Row>
+                        <Button
+                          className="btn-fill pull-right"
+
+                          variant="info"
+                          style={{ marginTop: 20 }}
+                          onClick={onUpdateProfile}
+                        >
+                          Update Profile
+                        </Button>
+                        <div className="clearfix"></div>
+                      </Form>
+                    </Col>
+                    <Col md="4">
+                      <Form>
+                        <div className="author" style={{ marginTop: 0 }}>
+                          <a href="#pablo" onClick={(e) => e.preventDefault()}>
+                            <img
+                              alt="..."
+                              className="avatar border-gray"
+                              src={require("assets/img/faces/face-3.jpg")}
+                            ></img>
+                            <h5 className="title">Salimhan Kurul</h5>
+                          </a>
+                          <p className="description">salimhan@retter.io</p>
+                        </div>
+                      </Form>
+                    </Col>
+                  </Row>
+                </Card.Body>
+              </Container>
+            </Card>
           </div>
           <Footer />
         </div>
@@ -260,4 +206,3 @@ function main() {
 }
 
 export default main;
-

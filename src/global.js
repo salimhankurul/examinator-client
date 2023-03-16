@@ -29,7 +29,7 @@ export function AuthProvider({ children }) {
       message: (
         <div>
           <div>
-            {message}
+            <b> {message} </b>
           </div>
         </div>
       ),
@@ -49,18 +49,14 @@ export function AuthProvider({ children }) {
     const { success, error } = await loginRequest({ email, password });
     
     if (error) {
-      if (error.status === 403) {
-        notify({ message: 'Error accured while trying to log in' })
-        tokenExpired()
-        return false
-      }
       notify({ message: 'Error accured while trying to log in' })
+      tokenExpired()
       return false
     } 
 
     notify({ success, message: 'Successfully Logged In !' })
+    await sleep(1000)
 
-    
     localStorage.setItem("accessToken", success.accessToken);
     localStorage.setItem("refreshToken", success.refreshToken);
 
@@ -85,21 +81,18 @@ export function AuthProvider({ children }) {
       notify({ success, message: 'Successfully logged out' })
     }
 
-    await sleep(1500)
+    await sleep(1000)
 
     tokenExpired()
   }
 
   function tokenExpired() {
-    notify({ message: 'Your session is expired loggin out...' })
-    sleep(1500).then(() => {
-      localStorage.clear();
-      setAccessTokenData(null)
-      setAccessToken(null)
-      setProfile(null)
+    localStorage.clear();
+    setAccessTokenData(null);
+    setAccessToken(null);
+    setProfile(null);
 
-      navigate("/login");
-    })
+    navigate("/login");
   }
 
   function initAuth(accessToken, accessTokenData) {

@@ -40,7 +40,7 @@ const options = [
 ]
 
 function main() {
-  const { accessToken, profile, setProfile } = useAuth();
+  const { accessToken, profile: globalProfile, setProfile } = useAuth();
 
   const [image, setImage] = React.useState(sidebarImage);
   const [color, setColor] = React.useState("black");
@@ -103,7 +103,7 @@ function main() {
       }
 
       setProfile({
-        ...profile,
+        ...globalProfile,
         firstName: firstName,
         lastName: lastName,
         courses: courses,
@@ -111,11 +111,10 @@ function main() {
   }
 
   useEffect(() => {
-    if (profile) {
-      console.log("ah yes profile is already inited", profile);
-      setLastName(profile.lastName);
-      setFirstName(profile.firstName);
-      setCourses(profile.courses);
+    if (globalProfile) {
+      setLastName(globalProfile.lastName);
+      setFirstName(globalProfile.firstName);
+      setCourses(globalProfile.courses);
       return;
     }
   }, []);

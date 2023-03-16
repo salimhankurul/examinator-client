@@ -1,5 +1,4 @@
 import React, { useState, useRef } from "react";
-import NotificationAlert from "react-notification-alert";
 
 import { Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
@@ -13,28 +12,8 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const notificationAlertRef = React.useRef(null);
-
-  const notify = ({ success, message }) => {
-    const options = {
-      place: "tr",
-      message: (
-        <div>
-          <div>
-            {message}
-          </div>
-        </div>
-      ),
-      type: success ? "success" : "warning",
-      icon: "nc-icon nc-bell-55",
-      autoDismiss: 7,
-    };
-    notificationAlertRef.current.notificationAlert(options);
-  }
-
   const handleLogin = async (e) => {
     setLoading(true);
-    notify({ message: 'Logging in...' })
     await login(email, password);
     setLoading(false);
   };
@@ -52,7 +31,6 @@ const LoginPage = () => {
 
   return (
     <>
-    <NotificationAlert ref={notificationAlertRef} />
     <section className="vh-100">
       <div className="container-fluid h-custom">
         <div className="row d-flex justify-content-center align-items-center h-100">

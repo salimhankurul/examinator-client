@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import jwt from 'jwt-decode' // import dependency
+import NotificationAlert from "react-notification-alert";
 
 import { loginRequest, logoutRequest, getProfileRequest } from "api";
 
@@ -10,30 +11,55 @@ export function useAuth() {
   return useContext(AuthContext);
 }
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 export function AuthProvider({ children }) {
   const [accessToken, setAccessToken] = useState();
   const [accessTokenData, setAccessTokenData] = useState();
   const [profile, setProfile] = useState();
   
   const navigate = useNavigate();
+  const notificationAlertRef = React.useRef(null);
+
+  const notify = ({ success, message }) => {
+    const options = {
+      place: "tr",
+      message: (
+        <div>
+          <div>
+            {message}
+          </div>
+        </div>
+      ),
+      type: success ? "success" : "warning",
+      icon: "nc-icon nc-bell-55",
+      autoDismiss: 7,
+    };
+    notificationAlertRef.current.notificationAlert(options);
+  }
 
   async function login(email, password) {
     if (accessToken) {
       alert("You are already logged in");
-      return
+      return false
     }
     
     const { success, error } = await loginRequest({ email, password });
     
     if (error) {
       if (error.status === 403) {
-        console.log("loginRequest error 403, redirect to login")
+        notify({ message: 'Error accured while trying to log in' })
         tokenExpired()
-        return
+        return false
       }
-      console.log("login request error", success);
-      return;
+      notify({ message: 'Error accured while trying to log in' })
+      return false
     } 
+
+    notify({ success, message: 'Successfully Logged In !' })
+
     
     localStorage.setItem("accessToken", success.accessToken);
     localStorage.setItem("refreshToken", success.refreshToken);
@@ -42,6 +68,7 @@ export function AuthProvider({ children }) {
     initAuth(success.accessToken, _accessTokenData)
 
     navigate("/"); 
+    return true
   }
 
   async function logout() { 
@@ -53,21 +80,26 @@ export function AuthProvider({ children }) {
     const { success, error } = await logoutRequest({ userId: accessTokenData.userId, accessToken });
     
     if (error) {
-      console.log("logout request error", error);
+      notify({ message: 'Error accured while trying to log out' })
     } else {
-      console.log("logout request success", success);
+      notify({ success, message: 'Successfully logged out' })
     }
+
+    await sleep(1500)
 
     tokenExpired()
   }
 
   function tokenExpired() {
-    console.log("tokenExpired called")
-    localStorage.clear();
-    setAccessTokenData(null)
-    setAccessToken(null)
-    setProfile(null)
-    navigate("/login");
+    notify({ message: 'Your session is expired loggin out...' })
+    sleep(1500).then(() => {
+      localStorage.clear();
+      setAccessTokenData(null)
+      setAccessToken(null)
+      setProfile(null)
+
+      navigate("/login");
+    })
   }
 
   function initAuth(accessToken, accessTokenData) {
@@ -103,5 +135,10 @@ export function AuthProvider({ children }) {
     setProfile,
   };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+  <>
+  <NotificationAlert ref={notificationAlertRef} />
+  <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+  </>
+  )
 }

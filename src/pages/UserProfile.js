@@ -17,6 +17,8 @@ import {
   ToggleButton,
 } from "react-bootstrap";
 import ChartistGraph from "react-chartist";
+import NotificationAlert from "react-notification-alert";
+
 
 import AdminNavbar from "components/AdminNavbar";
 import Footer from "components/Footer";
@@ -50,6 +52,8 @@ function main() {
   const [lastName, setLastName] = React.useState("Loading...");
   const [courses, setCourses] = React.useState([]);
 
+  const notificationAlertRef = React.useRef(null);
+
   React.useEffect(() => {
     document.documentElement.scrollTop = 0;
     document.scrollingElement.scrollTop = 0;
@@ -64,7 +68,25 @@ function main() {
     }
   }, [location]);
 
+  const notify = ({ success, message }) => {
+    const options = {
+      place: "tr",
+      message: (
+        <div>
+          <div>
+            {message}
+          </div>
+        </div>
+      ),
+      type: success ? "success" : "warning",
+      icon: "nc-icon nc-bell-55",
+      autoDismiss: 7,
+    };
+    notificationAlertRef.current.notificationAlert(options);
+  }
+
   const onUpdateProfile = async (e) => {
+      
       const body = {
           firstName: firstName,
           lastName: lastName,
@@ -72,11 +94,14 @@ function main() {
       }
 
       const { success, error } = await updateProfileRequest({ body, accessToken });
-
+      
       if (error) {
-        console.log("updateProfileRequest request error", success);
+        notify({ message: 'Error accured while updating profile' })
         return
-      } 
+      } else {
+        notify({ success, message: 'Profile updated successfully' })
+      }
+
       setProfile({
         ...profile,
         firstName: firstName,
@@ -95,8 +120,11 @@ function main() {
     }
   }, []);
 
+  
+
   return (
     <>
+    <NotificationAlert ref={notificationAlertRef} />
       <div className="wrapper">
         <Sidebar color={color} image={hasImage ? image : ""} routes={routes} />
         <div className="main-panel" ref={mainPanel}>

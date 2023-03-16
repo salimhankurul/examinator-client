@@ -14,31 +14,38 @@ import ResetPassword from "./pages/auth-reset-password";
 import DashboardLayout from "./pages/Dashboard";
 import ProfileLayout from "./pages/UserProfile";
 
-import { AuthProvider } from "./auth";
+import { AuthProvider } from "./global";
 
-import { useAuth } from "./auth";
+import { useAuth } from "./global";
 import jwt from 'jwt-decode' // import dependency
-
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 function PrivateRoute({ children }) {
+  const { accessToken: accessTokenAuth, initAuth, tokenExpired } = useAuth()
+
   const accessToken = localStorage.getItem("accessToken");
 
   if (!accessToken) {
+    console.log("localStorage::accessToken is null, redirect to login")
     return <Navigate to="/login" />;
   }
 
-  console.log("PrivateRoute::accessToken", accessToken);
+  const accessTokenData = jwt(accessToken)
 
-  const { userData, setUserData, setAccessToken } = useAuth()
-
-  if (!userData) {
-    setUserData(jwt(accessToken))
-    setAccessToken(accessToken)
+  // check exp is expired
+  if (accessTokenData.exp < Date.now() / 1000) {
+    console.log("localStorage::accessToken is expired, redirect to login")
+    tokenExpired()
   }
 
-  console.log("userData", userData);
+  console.log("PrivateRoute::accessToken", accessToken, accessTokenData);
+
+  if (!accessTokenAuth) {
+    console.log("useAuth::auth is null, set it")
+    initAuth(accessToken, accessTokenData)
+    return <Navigate to="/" />;
+  }
 
   return children
 }

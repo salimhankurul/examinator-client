@@ -15,7 +15,7 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import {
   Navbar,
@@ -31,35 +31,16 @@ import {
 
 import routes from "routes.js";
 
-import { useAuth } from "../auth";
-
-function MyCard() {
-  return (
-    <Container className="border border-secondary rounded">
-      <Row>
-        <Col xs={3} className="align-self-center">
-          <Image
-            src={require("assets/img/photo-1431578500526-4d9613015464.jpeg")}
-            width={50}
-            height={50}
-            roundedCircle
-          />
-        </Col>
-        <Col xs={9} className="align-self-center">
-          <h4 style={{ margin: "15px 0 15px" }}>Salimhan Kurul</h4>
-        </Col>
-      </Row>
-    </Container>
-  );
-}
+import { useAuth } from "../global";
 
 function Header() {
-  const { logout } = useAuth()
+  const { logout, profile } = useAuth();
 
-  function handleLogOut() {
-    console.log("logOut button clicked");
-    logout()
-  }
+  const [navbarProfile, setNavbarProfile] = useState();
+ 
+  useEffect(() => {
+    setNavbarProfile(profile);
+  }, [profile]);
 
   return (
     <Navbar style={{ maxHeight: "70px" }} bg="light" expand="lg">
@@ -71,16 +52,28 @@ function Header() {
         </Navbar.Toggle>
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="nav mr-auto" navbar>
-            <Nav.Item>{MyCard()}</Nav.Item>
+            <Nav.Item>
+              <Container className="border border-secondary rounded">
+                <Row>
+                  <Col xs={3} className="align-self-center">
+                    <Image
+                      src={require("assets/img/photo-1431578500526-4d9613015464.jpeg")}
+                      width={50}
+                      height={50}
+                      roundedCircle
+                    />
+                  </Col>
+                  <Col xs={9} className="align-self-center">
+                    <h4 style={{ margin: "15px 0 15px" }}> { (navbarProfile?.firstName || "") + " " + (navbarProfile?.lastName || "") }</h4>
+                  </Col>
+                </Row>
+              </Container>
+            </Nav.Item>
           </Nav>
           <Nav navbar>
             <Nav.Item>
               {" "}
-              <Button 
-              variant="primary" 
-              size="lg"
-              onClick={handleLogOut}
-              active>
+              <Button variant="primary" size="lg" onClick={logout} active>
                 Log Out
               </Button>
             </Nav.Item>

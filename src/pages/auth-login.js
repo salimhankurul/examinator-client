@@ -4,7 +4,7 @@ import { Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import "../assets/css/login.css";
 
-import { useAuth } from "../auth";
+import { useAuth } from "../global";
 
 const LoginPage = () => {
   const { login } = useAuth();

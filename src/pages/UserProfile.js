@@ -28,8 +28,8 @@ import sidebarImage from "assets/img/sidebar-3.jpg";
 
 import Select from 'react-select'
 
-import { useAuth } from "../auth";
-import { updateProfileRequest, getProfileRequest } from "api";
+import { useAuth } from "../global";
+import { updateProfileRequest } from "api";
 
 const options = [
   { value: 'chocolate', label: 'Chocolate' },
@@ -38,7 +38,7 @@ const options = [
 ]
 
 function main() {
-  const { userData, accessToken } = useAuth();
+  const { accessToken, profile, setProfile } = useAuth();
 
   const [image, setImage] = React.useState(sidebarImage);
   const [color, setColor] = React.useState("black");
@@ -75,25 +75,24 @@ function main() {
 
       if (error) {
         console.log("updateProfileRequest request error", success);
-        alert(error.message);
+        return
       } 
+      setProfile({
+        ...profile,
+        firstName: firstName,
+        lastName: lastName,
+        courses: courses,
+      })
   }
 
   useEffect(() => {
-    const fetchData = async () => {
-      const { success, error } = await getProfileRequest({ accessToken });
-      if (error) {
-        console.log("getProfileRequest error", error);
-        alert(error.message);
-      } 
-      console.log("getProfileRequest", success);
-
-      setLastName(success.data.lastName);
-      setFirstName(success.data.firstName);
-      setCourses(success.data.courses);
-
-    };
-    fetchData();
+    if (profile) {
+      console.log("ah yes profile is already inited", profile);
+      setLastName(profile.lastName);
+      setFirstName(profile.firstName);
+      setCourses(profile.courses);
+      return;
+    }
   }, []);
 
   return (

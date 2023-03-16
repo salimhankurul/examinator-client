@@ -74,7 +74,7 @@ export const getProfileRequest = async ({ accessToken }) => {
       }
     }
     );
-    console.log(JSON.stringify(request))
+
     console.log("getProfileRequest response",  request.data);
     return { success: request.data };
   } catch (error) {

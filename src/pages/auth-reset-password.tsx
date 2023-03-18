@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import "../assets/css/login.css";
 
 class ResetPassword extends React.Component {
-  constructor(props) {
+  constructor(props: any) {
     super(props);
 
     this.state = {};
@@ -26,7 +26,7 @@ class ResetPassword extends React.Component {
                 <h3>
                   <i className="fa fa-lock fa-4x"></i>
                 </h3>
-                <h2 className="text-center">Forgot Password?</h2>
+                <h2 className="text-center">Reset Password</h2>
                 <p>You can reset your password here.</p>
                 <div className="panel-body">
                   <form
@@ -41,11 +41,22 @@ class ResetPassword extends React.Component {
                         <i className="glyphicon glyphicon-envelope color-blue"></i>
                       </span>
                       <input
-                        id="email"
-                        name="email"
-                        placeholder="email address"
+                        id="input1"
+                        name="password1"
+                        placeholder=""
                         className="form-control form-control-lg"
-                        type="email"
+                        type="text"
+                      />
+                    </div>
+
+                    <div className="form-group">
+                
+                      <input
+                        id="input2"
+                        name="password2"
+                        placeholder=""
+                        className="form-control form-control-lg"
+                        type="text"
                       />
                     </div>
 

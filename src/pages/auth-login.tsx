@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, ChangeEvent } from "react";
 
 import { Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
@@ -7,27 +7,24 @@ import "../assets/css/login.css";
 import { useAuth } from "../global";
 
 const LoginPage = () => {
-  const { login } = useAuth();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+  const { login } = useAuth() as any;
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const handleLogin = async (e) => {
+  const handleLogin = async () => {
     setLoading(true);
     await login(email, password);
     setLoading(false);
   };
 
-  const onChangeEmail = (e) => {
-    const email = e.target.value;
-    setEmail(email);
+  const onChangeEmail = (e: ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
   };
 
-  const onChangePassword = (e) => {
-    const pass = e.target.value;
-    setPassword(pass);
+  const onChangePassword = (e: ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
   };
-
 
   return (
     <>
@@ -76,7 +73,7 @@ const LoginPage = () => {
                 </div>
 
                 <div className="d-flex justify-content-between align-items-center">         
-                  <Link to="/reset-password" className="text-body">
+                  <Link to="/forgot-password" className="text-body">
                     Forgot password?
                   </Link>
                 </div>

@@ -1,43 +1,22 @@
-/*!
-
-=========================================================
-* Light Bootstrap Dashboard React - v2.0.1
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/light-bootstrap-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/light-bootstrap-dashboard-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
 import {
   Navbar,
   Container,
   Nav,
-  Dropdown,
   Button,
   Image,
   Row,
   Col,
-  Card,
 } from "react-bootstrap";
 
-import routes from "routes.js";
-
 import { useAuth } from "../global";
+import { Profile } from "../types";
 
-function Header() {
-  const { logout, profile } = useAuth();
+function Header(): any {
+  const { logout, profile } = useAuth() as any;
 
-  const [navbarProfile, setNavbarProfile] = useState();
- 
+  const [navbarProfile, setNavbarProfile] = useState<Profile | null>();
+
   useEffect(() => {
     setNavbarProfile(profile);
   }, [profile]);
@@ -57,14 +36,19 @@ function Header() {
                 <Row>
                   <Col xs={3} className="align-self-center">
                     <Image
-                      src={require("assets/img/photo-1431578500526-4d9613015464.jpeg")}
+                      src={require("../assets/img/photo-1431578500526-4d9613015464.jpeg")}
                       width={50}
                       height={50}
                       roundedCircle
                     />
                   </Col>
                   <Col xs={9} className="align-self-center">
-                    <h4 style={{ margin: "15px 0 15px" }}> { (navbarProfile?.firstName || "") + " " + (navbarProfile?.lastName || "") }</h4>
+                    <h4 style={{ margin: "15px 0 15px" }}>
+                      {" "}
+                      {(navbarProfile?.firstName || "") +
+                        " " +
+                        (navbarProfile?.lastName || "")}
+                    </h4>
                   </Col>
                 </Row>
               </Container>
@@ -85,12 +69,3 @@ function Header() {
 }
 
 export default Header;
-
-{
-  /* <Button variant="outline-danger" active>
-Sign Out
-v<Button style={{ maxHeight: '60px' }} variant="outline-danger" active>
-                Sign Out
-              </Button>
-</Button> */
-}

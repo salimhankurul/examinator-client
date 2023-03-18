@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { useLocation, Route, Switch, Routes } from "react-router-dom";
+import React from "react";
+import { useLocation } from "react-router-dom";
 // react-bootstrap components
 import {
   Badge,
@@ -17,12 +17,13 @@ import {
 } from "react-bootstrap";
 import ChartistGraph from "react-chartist";
 
-import AdminNavbar from "components/AdminNavbar";
-import Footer from "components/Footer";
-import Sidebar from "components/Sidebar";
-import routes from "routes.js";
+import AdminNavbar from "../components/AdminNavbar";
+import Footer from "../components/Footer";
+import Sidebar from "../components/Sidebar";
+import routes from "../routes";
 
-import sidebarImage from "assets/img/sidebar-3.jpg";
+// @ts-ignore
+import sidebarImage from "../assets/img/sidebar-3.jpg";
 
 function content() {
   return (
@@ -183,7 +184,7 @@ function content() {
                         "screen and (max-width: 640px)",
                         {
                           axisX: {
-                            labelInterpolationFnc: function (value) {
+                            labelInterpolationFnc: function (value: any) {
                               return value[0];
                             },
                           },
@@ -312,7 +313,7 @@ function content() {
                         {
                           seriesBarDistance: 5,
                           axisX: {
-                            labelInterpolationFnc: function (value) {
+                            labelInterpolationFnc: function (value: any) {
                               return value[0];
                             },
                           },
@@ -651,19 +652,19 @@ function main() {
   const [hasImage, setHasImage] = React.useState(true);
   const location = useLocation();
   const mainPanel = React.useRef(null);
-  React.useEffect(() => {
-    document.documentElement.scrollTop = 0;
-    document.scrollingElement.scrollTop = 0;
-    mainPanel.current.scrollTop = 0;
-    if (
-      window.innerWidth < 993 &&
-      document.documentElement.className.indexOf("nav-open") !== -1
-    ) {
-      document.documentElement.classList.toggle("nav-open");
-      var element = document.getElementById("bodyClick");
-      element.parentNode.removeChild(element);
-    }
-  }, [location]);
+  // React.useEffect(() => {
+  //   document.documentElement.scrollTop = 0;
+  //   document.scrollingElement.scrollTop = 0;
+  //   mainPanel.current.scrollTop = 0;
+  //   if (
+  //     window.innerWidth < 993 &&
+  //     document.documentElement.className.indexOf("nav-open") !== -1
+  //   ) {
+  //     document.documentElement.classList.toggle("nav-open");
+  //     var element = document.getElementById("bodyClick");
+  //     element.parentNode.removeChild(element);
+  //   }
+  // }, [location]);
   return (
     <>
       <div className="wrapper">
@@ -671,7 +672,7 @@ function main() {
         <div className="main-panel" ref={mainPanel}>
           <AdminNavbar />
           <div className="content"> 
-           { content(routes) }
+           { content() }
           </div>
           <Footer />
         </div>

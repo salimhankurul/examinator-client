@@ -4,11 +4,11 @@ import jwt from 'jwt-decode' // import dependency
 import NotificationAlert from 'react-notification-alert'
 
 import { loginRequest, logoutRequest, getProfileRequest } from './api'
-import { Profile, TokenData } from './types'
+import { Context, Profile, TokenData } from './types'
 
-const AuthContext = React.createContext({})
+const AuthContext = React.createContext<Context>({} as Context)
 
-export function useAuth() {
+export function useAuth(): Context {
   return useContext(AuthContext)
 }
 
@@ -127,7 +127,7 @@ export function AuthProvider({ children }: any) {
     setAccessToken,
     setAccessTokenData,
     setProfile,
-  }
+  } as Context
 
   return (
     <>

@@ -1,6 +1,6 @@
 import React from 'react'
 import { useLocation } from 'react-router-dom'
-import { Card, Container } from 'react-bootstrap'
+import { Card, Row, Col, Container, Button } from 'react-bootstrap'
 import NotificationAlert from 'react-notification-alert'
 
 import AdminNavbar from '../components/AdminNavbar'
@@ -15,7 +15,7 @@ import sidebarImage from '../assets/img/sidebar-3.jpg'
 import { useAuth } from '../global'
 
 function main() {
-  const { accessToken, profile: globalProfile, setProfile } = useAuth() as any
+  const { accessToken, profile: globalProfile, setProfile } = useAuth()
 
   const [image, setImage] = React.useState(sidebarImage)
   const [color, setColor] = React.useState('black')
@@ -56,18 +56,61 @@ function main() {
     notificationAlertRef.current.notificationAlert(options)
   }
 
+  const getCards = (courseName: string) => {
+    return (
+      <Card border='primary' style={{ width: '18rem' }}>
+        <Card.Header style={{ fontSize: '24px' }}>{courseName}</Card.Header>
+        <Card.Body>
+          <Card.Title className='text-right' style={{ fontSize: '12px' }}>
+            18:45 22/02/23
+          </Card.Title>
+          <ul>
+            <li>
+              <strong>Duration:</strong> 60 minutes
+            </li>
+            <li>
+              <strong>Question Type:</strong> Multiple Choice
+            </li>
+            <li>
+              <strong>Number of Questions:</strong> 40
+            </li>
+            <li>
+              <strong>Passing Score:</strong> 70%
+            </li>
+          </ul>
+
+          <div className='d-flex flex-column align-items-center justify-content-center'>
+            <Button variant='primary'>Start Exam</Button>
+          </div>
+        </Card.Body>
+      </Card>
+    )
+  }
+
+  const MyComponent = () => {
+    const courseList = globalProfile.courses
+    return (
+      <Row xs={1} sm={2} md={3} className='g-4'>
+        {courseList.map((courseName, index) => (
+          <Col className='d-flex justify-content-center align-items-center' key={index}>
+            {getCards(courseName.label)}
+          </Col>
+        ))}
+      </Row>
+    )
+  }
+
   return (
     <>
       <NotificationAlert ref={notificationAlertRef} />
-      <div className="wrapper">
+      <div className='wrapper'>
         <Sidebar color={color} image={image} routes={routes} />
-        <div className="main-panel" ref={mainPanel}>
+        <div className='main-panel' ref={mainPanel}>
           <AdminNavbar />
-          <div className="content">
-            Exams
-            <Card className="card-user">
+          <div className='content'>
+            <Card className='card-user'>
               <Container fluid>
-                <Card.Body></Card.Body>
+                <Card.Body>{MyComponent()}</Card.Body>
               </Container>
             </Card>
           </div>

@@ -32,7 +32,7 @@ function Header(): any {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="nav mr-auto" navbar>
             <Nav.Item>
-              <Container className="border border-secondary rounded">
+              <Container className="">
                 <Row>
                   <Col xs={3} className="align-self-center">
                     <Image

@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, ChangeEvent, MouseEventHandler } from 'react'
+import React, { useRef, useState, useEffect, MouseEventHandler } from 'react'
 import { useLocation } from 'react-router-dom'
 import { Button, Card, Container, Row, Col, Form } from 'react-bootstrap'
 
@@ -14,12 +14,20 @@ import routes from '../routes'
 
 import { useAuth } from '../global'
 import { updateProfileRequest } from '../api'
+import { Course } from '../types'
 
 const options = [
-  { value: 'chocolate', label: 'Chocolate' },
-  { value: 'strawberry', label: 'Strawberry' },
-  { value: 'vanilla', label: 'Vanilla' },
-]
+  { value: 'COME125', label: 'Introduction to Computer Science' },
+  { value: 'COME225', label: 'Data Structures and Algorithms' },
+  { value: 'COME325', label: 'Computer Networks' },
+  { value: 'COME425', label: 'Database Systems' },
+  { value: 'COME525', label: 'Operating Systems' },
+  { value: 'COME625', label: 'Software Engineering' },
+  { value: 'COME725', label: 'Artificial Intelligence' },
+  { value: 'COME825', label: 'Computer Graphics' },
+  { value: 'COME925', label: 'Computer Architecture' },
+  { value: 'COME1025', label: 'Programming Languages' },
+];
 
 function main() {
   const { accessToken, profile: globalProfile, setProfile } = useAuth() as any
@@ -32,7 +40,7 @@ function main() {
 
   const [firstName, setFirstName] = useState<string>('Loading...')
   const [lastName, setLastName] = useState<string>('Loading...')
-  const [courses, setCourses] = useState<string[]>([])
+  const [courses, setCourses] = useState<Course[]>([])
 
   const notificationAlertRef = useRef<any>(null)
 
@@ -149,13 +157,10 @@ function main() {
                         <Row>
                           <Col>
                             <Select
-                              value={courses.map((i) => ({
-                                value: i,
-                                label: i,
-                              }))}
+                              value={courses}
                               isMulti
                               options={options}
-                              onChange={(choices) => setCourses(choices.map((i) => i.value))}
+                              onChange={(choices) => setCourses(choices as Course[])}
                             />
                           </Col>
                         </Row>

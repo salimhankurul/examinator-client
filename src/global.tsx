@@ -3,12 +3,12 @@ import { useNavigate } from 'react-router-dom'
 import jwt from 'jwt-decode' // import dependency
 import NotificationAlert from 'react-notification-alert'
 
-import { loginRequest, logoutRequest, getProfileRequest } from './api'
-import { Context, Profile, TokenData } from './types'
+import { loginRequest, logoutRequest, getProfileRequest } from './api/api'
+import { TokenMetaData, UsersTableItem, PrivateContext } from './back-types'
 
-const AuthContext = React.createContext<Context>({} as Context)
+const AuthContext = React.createContext<PrivateContext>({} as PrivateContext)
 
-export function useAuth(): Context {
+export function useAuth(): PrivateContext {
   return useContext(AuthContext)
 }
 
@@ -18,13 +18,13 @@ function sleep(ms: number) {
 
 export function AuthProvider({ children }: any) {
   const [accessToken, setAccessToken] = useState<string | null>()
-  const [accessTokenData, setAccessTokenData] = useState<TokenData | null>()
-  const [profile, setProfile] = useState<Profile | null>()
+  const [accessTokenData, setAccessTokenData] = useState<TokenMetaData | null>()
+  const [user, setUser] = useState<UsersTableItem | null>()
 
   const navigate = useNavigate()
   const notificationAlertRef = React.useRef<any>(null)
 
-  const notify = ({ success, message }: { success?: string; message: string }) => {
+  const notify = ({ success, message }: { success?: boolean; message: string }) => {
     const options = {
       place: 'tr',
       message: (
@@ -41,93 +41,100 @@ export function AuthProvider({ children }: any) {
     notificationAlertRef.current.notificationAlert(options)
   }
 
-  async function login(email: string, password: string) {
+  async function login(email: string, password: string): Promise<boolean> {
     if (accessToken) {
       alert('You are already logged in')
       return false
     }
 
-    const { success, error } = await loginRequest({ email, password })
+    const res = await loginRequest({ email, password })
 
-    if (error) {
-      notify({ message: 'Error accured while trying to log in' })
-      tokenExpired()
+    if (res.success == false) {
+      notify({ success: false, message: 'Error accured while trying to log in' })
+      terminateSession()
       return false
     }
 
-    notify({ success, message: 'Successfully Logged In !' })
+    notify({ success: true, message: 'Successfully Logged In !' })
+    
     await sleep(1000)
 
-    localStorage.setItem('accessToken', success.accessToken)
-    localStorage.setItem('refreshToken', success.refreshToken)
+    localStorage.setItem('accessToken', res.data.session.accessToken)
+    localStorage.setItem('refreshToken', res.data.session.refreshToken)
 
-    const _accessTokenData = jwt(success.accessToken) as TokenData
-    initAuth(success.accessToken, _accessTokenData)
+    const _accessTokenData = jwt(res.data.session.accessToken) as TokenMetaData
+    setAccessToken(res.data.session.accessToken)
+    setAccessTokenData(_accessTokenData)
+    setUser(res.data.user)
 
     navigate('/')
     return true
   }
 
-  async function logout() {
+  async function logout(): Promise<void> {
     if (!accessToken || !accessTokenData) {
-      alert('You are not logged in')
+      notify({ success: false, message: 'Error accured while trying to log out' })
       return
     }
 
-    const { success, error } = await logoutRequest({ userId: accessTokenData.userId, accessToken })
-
-    if (error) {
-      notify({ message: 'Error accured while trying to log out' })
-    } else {
-      notify({ success, message: 'Successfully logged out' })
+    const res = await logoutRequest({ userId: accessTokenData.userId, accessToken })
+    
+    if (res.success == false) {
+      notify({ success: false, message: 'Error accured while trying to log out' })
+      terminateSession()
+      return
     }
+
+    notify({ success: true, message: 'Successfully loged out' })
 
     await sleep(1000)
 
-    tokenExpired()
+    terminateSession()
   }
 
-  function tokenExpired() {
+  async function fetchUser(accessToken: string): Promise<void> {
+    const res = await getProfileRequest({ accessToken })
+    
+    if (res.success == false) {
+      notify({ success: false, message: 'Error accured while trying to get user' })
+      terminateSession()
+      return
+    }
+
+    notify({ success: true, message: 'Successfully fetched user' })
+    setUser(res.data.user)
+  }
+
+  async function terminateSession(): Promise<void> {
     localStorage.clear()
     setAccessTokenData(null)
     setAccessToken(null)
-    setProfile(null)
+    setUser(null)
 
     navigate('/login')
   }
 
-  function initAuth(accessToken: string, accessTokenData: TokenData) {
+  // this is called when page is refreshed, and we need to reinitialize the private route
+  function privateRouteRefreshInit(accessToken: string, accessTokenData: TokenMetaData): void {
     setAccessToken(accessToken)
     setAccessTokenData(accessTokenData)
-
-    const getProfile = async (accessToken: string) => {
-      const { success, error } = await getProfileRequest({ accessToken })
-      if (error) {
-        if (error.status === 403) {
-          tokenExpired()
-          return
-        }
-        return
-      }
-      setProfile(success.data)
-    }
-    getProfile(accessToken)
+    fetchUser(accessToken)
   }
 
   const value = {
     accessToken,
     accessTokenData,
-    profile,
+    user,
 
     login,
     logout,
-    tokenExpired,
-    initAuth,
+    terminateSession,
+    privateRouteRefreshInit,
 
     setAccessToken,
     setAccessTokenData,
-    setProfile,
-  } as Context
+    setUser,
+  } as PrivateContext
 
   return (
     <>

@@ -23,7 +23,8 @@
     "react-scripts": "5.0.1",
     "react-select": "5.7.0",
     "reactstrap": "8.8.1",
-    "sass": "1.53.0"
+    "sass": "1.53.0",
+    "zod": "3.20.6"
   },
   "optionalDependencies": {
     "jquery": "3.5.1",

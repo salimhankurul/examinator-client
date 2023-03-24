@@ -23,18 +23,3 @@ export interface Profile {
     lastName: string,
     courses: Course[],  
 }
-
-export interface Context {
-    accessToken: string,
-    accessTokenData: TokenData,
-    profile: Profile,
-
-    login: (email: string, password: string) => Promise<boolean>
-    logout: () => Promise<void>
-    tokenExpired: () => void
-    initAuth: (accessToken: string, accessTokenData: TokenData) => void
-
-    setAccessToken: Dispatch<SetStateAction<string | null | undefined>>
-    setAccessTokenData: Dispatch<SetStateAction<TokenData | null | undefined>>
-    setProfile: Dispatch<SetStateAction<Profile | null | undefined>>
-}

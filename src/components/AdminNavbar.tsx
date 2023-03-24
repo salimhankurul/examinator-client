@@ -10,16 +10,18 @@ import {
 } from "react-bootstrap";
 
 import { useAuth } from "../global";
-import { Profile } from "../types";
+import { UsersTableItem } from "../back-types";
 
 function Header(): any {
-  const { logout, profile } = useAuth() as any;
+  const { logout, user } = useAuth()
 
-  const [navbarProfile, setNavbarProfile] = useState<Profile | null>();
+  const [navbarProfile, setNavbarProfile] = useState<UsersTableItem | null>();
 
   useEffect(() => {
-    setNavbarProfile(profile);
-  }, [profile]);
+    if (user) {
+      setNavbarProfile(user);
+    }
+  }, [user]);
 
   return (
     <Navbar style={{ maxHeight: "70px" }} bg="light" expand="lg">

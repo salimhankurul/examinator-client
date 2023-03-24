@@ -20,12 +20,12 @@ import { AuthProvider } from './global'
 
 import { useAuth } from './global'
 import jwt from 'jwt-decode' // import dependency
-import { TokenData } from './types'
+import { TokenMetaData } from './back-types'
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 
 function PrivateRoute({ children }: any) {
-  const { accessToken: accessTokenAuth, initAuth, tokenExpired } = useAuth() as any
+  const { accessToken: accessTokenAuth, privateRouteRefreshInit, terminateSession } = useAuth()
 
   const accessToken = localStorage.getItem('accessToken')
 
@@ -34,19 +34,19 @@ function PrivateRoute({ children }: any) {
     return <Navigate to="/login" />
   }
 
-  const accessTokenData = jwt(accessToken) as TokenData
+  const accessTokenData = jwt(accessToken) as TokenMetaData
 
   // check exp is expired
   if (accessTokenData.exp < Date.now() / 1000) {
     console.log('localStorage::accessToken is expired, redirect to login')
-    tokenExpired()
+    terminateSession()
   }
 
   console.log('PrivateRoute::accessToken', accessToken, accessTokenData)
 
   if (!accessTokenAuth) {
     console.log('useAuth::auth is null, set it')
-    initAuth(accessToken, accessTokenData)
+    privateRouteRefreshInit(accessToken, accessTokenData)
     return <Navigate to="/" />
   }
 

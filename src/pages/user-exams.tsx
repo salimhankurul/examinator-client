@@ -15,7 +15,7 @@ import sidebarImage from '../assets/img/sidebar-3.jpg'
 import { useAuth } from '../global'
 
 function main() {
-  const { accessToken, profile: globalProfile, setProfile } = useAuth()
+  const { accessToken, user } = useAuth()
 
   const [image, setImage] = React.useState(sidebarImage)
   const [color, setColor] = React.useState('black')
@@ -88,12 +88,12 @@ function main() {
   }
 
   const MyComponent = () => {
-    const courseList = globalProfile.courses
+    const courseList = user!.courses
     return (
       <Row xs={1} sm={2} md={3} className='g-4'>
         {courseList.map((courseName, index) => (
           <Col className='d-flex justify-content-center align-items-center' key={index}>
-            {getCards(courseName.label)}
+            {getCards(courseName.name)}
           </Col>
         ))}
       </Row>

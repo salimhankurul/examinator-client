@@ -1,13 +1,9 @@
 import Head from "next/head";
-import { useCallback, useState } from "react";
 import { Box, Container, Stack, Typography } from "@mui/material";
 import { CreateExamForm } from "src/sections/exam/create-exam-form";
-import { SettingsPassword } from "src/sections/settings/settings-password";
 import { Layout as DashboardLayout } from "src/layouts/dashboard/layout";
 
 const Page = () => {
-  const [questionCount, setQuestionCount] = useState(50);
-
   return (
     <>
       <Head>

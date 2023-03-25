@@ -180,7 +180,7 @@ export const CreateExamForm = () => {
           <Grid container spacing={6} wrap="wrap">
             <Grid item md={4} sm={6} xs={12}>
               <Stack spacing={1}>
-                <Typography variant="h6">Exam Info</Typography>
+                <Typography variant="h6">Information</Typography>
                 <Stack
                   style={{
                     rowGap: 10,
@@ -213,6 +213,38 @@ export const CreateExamForm = () => {
                     onChange={handleChange}
                     value={meta.examDescription}
                   />
+                  <Typography variant="h6">Metadata</Typography>
+                  <TextField
+                    spacing={1}
+                    label="Question Count"
+                    name="questionCount"
+                    type="number"
+                    onChange={handleQuestionCount}
+                    value={meta.questionCount}
+                  />
+
+                  <TextField
+                    spacing={1}
+                    label="Exam Duration (minutes)"
+                    name="duration"
+                    type="number"
+                    onChange={handleExamDuration}
+                    value={meta.duration}
+                  />
+                  
+                </Stack>
+              </Stack>
+            </Grid>
+
+            <Grid item md={4} sm={6} xs={12}>
+              <Stack spacing={1}>
+                <Stack
+                  style={{
+                    rowGap: 15,
+                  }}
+                >
+                <Typography variant="h6">Details</Typography>
+
                   <Box>
                     <Stack
                       style={{
@@ -238,18 +270,8 @@ export const CreateExamForm = () => {
                       value={meta.minimumPassingScore}
                     />
                   </Box>
-                </Stack>
-              </Stack>
-            </Grid>
+                  <Typography variant="h6">Randominization</Typography>
 
-            <Grid item md={4} sm={6} xs={12}>
-              <Stack spacing={1}>
-                <Typography variant="h6">Randominization</Typography>
-                <Stack
-                  style={{
-                    rowGap: 15,
-                  }}
-                >
                   <FormControlLabel
                     label="Questions"
                     control={
@@ -270,25 +292,7 @@ export const CreateExamForm = () => {
                       />
                     }
                   />
-                  <Typography variant="h6">Exam Metadata</Typography>
-                  <TextField
-                    spacing={1}
-                    label="Question Count"
-                    name="questionCount"
-                    type="number"
-                    onChange={handleQuestionCount}
-                    value={meta.questionCount}
-                  />
-
-                  <TextField
-                    spacing={1}
-                    label="Exam Duration (minutes)"
-                    name="duration"
-                    type="number"
-                    onChange={handleExamDuration}
-                    value={meta.duration}
-                  />
-
+                  
                   <Stack
                     style={{
                       marginTop: "10%",
@@ -318,7 +322,7 @@ export const CreateExamForm = () => {
                     padding: 0
                   }}
                 >
-                  <Typography variant="h6">Exam Date</Typography>
+                  <Typography variant="h6">Date & Time</Typography>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DateCalendar
                       value={startDate}
@@ -326,7 +330,6 @@ export const CreateExamForm = () => {
                       onChange={(newValue) => setStartDate(newValue)}
                     />
                   </LocalizationProvider>
-                  <Typography variant="h6">Exam Time </Typography>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <TimeClock
                       ampm={false}

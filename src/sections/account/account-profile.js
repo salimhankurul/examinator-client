@@ -19,7 +19,9 @@ const user = {
 };
 
 export const AccountProfile = () => (
-  <Card>
+  <Card style={{
+    height: '100%'
+  }}>
     <CardContent>
       <Box
         sx={{
@@ -56,14 +58,5 @@ export const AccountProfile = () => (
         </Typography>
       </Box>
     </CardContent>
-    <Divider />
-    <CardActions>
-      <Button
-        fullWidth
-        variant="text"
-      >
-        Upload picture
-      </Button>
-    </CardActions>
-  </Card>
+    </Card>
 );

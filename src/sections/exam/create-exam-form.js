@@ -152,29 +152,28 @@ export const CreateExamForm = () => {
     [setQuestions, questions, currentQuestion]
   );
 
-  const handleRandomFill = 
-    (event) => {
-      const random = {
-        question: loremIpsum({ count: 3, units: "sentences" }),
-        correctOption: ["A", "B", "C", "D"][Math.floor(Math.random() * 4)],
-        options: {
-          A: loremIpsum({ count: 1, units: "sentences" }),
-          B: loremIpsum({ count: 1, units: "sentences" }),
-          C: loremIpsum({ count: 1, units: "sentences" }),
-          D: loremIpsum({ count: 1, units: "sentences" }),
-        },
-      };
-      console.log(random);
-      console.log(currentQuestion);
+  const handleRandomFill = (event) => {
+    const random = {
+      question: loremIpsum({ count: 3, units: "sentences" }),
+      correctOption: ["A", "B", "C", "D"][Math.floor(Math.random() * 4)],
+      options: {
+        A: loremIpsum({ count: 1, units: "sentences" }),
+        B: loremIpsum({ count: 1, units: "sentences" }),
+        C: loremIpsum({ count: 1, units: "sentences" }),
+        D: loremIpsum({ count: 1, units: "sentences" }),
+      },
+    };
+    console.log(random);
+    console.log(currentQuestion);
 
-      questions[currentQuestion] = random;
-      setQuestions(JSON.parse(JSON.stringify(questions)));
-    }
+    questions[currentQuestion] = random;
+    setQuestions(JSON.parse(JSON.stringify(questions)));
+  };
 
   return (
     <form onSubmit={handleSubmit}>
       <Card>
-        <CardHeader subheader="Please fill in following information" title="Exam Details" />
+        <CardHeader subheader="Please fill in following fields" title="Exam Details" />
         <Divider />
         <CardContent>
           <Grid container spacing={6} wrap="wrap">
@@ -231,7 +230,6 @@ export const CreateExamForm = () => {
                     onChange={handleExamDuration}
                     value={meta.duration}
                   />
-                  
                 </Stack>
               </Stack>
             </Grid>
@@ -243,7 +241,7 @@ export const CreateExamForm = () => {
                     rowGap: 15,
                   }}
                 >
-                <Typography variant="h6">Details</Typography>
+                  <Typography variant="h6">Details</Typography>
 
                   <Box>
                     <Stack
@@ -292,7 +290,7 @@ export const CreateExamForm = () => {
                       />
                     }
                   />
-                  
+
                   <Stack
                     style={{
                       marginTop: "10%",
@@ -306,8 +304,11 @@ export const CreateExamForm = () => {
                     </div>
                     <Typography variant="h6">Ends</Typography>
                     <div>
-                      {startDate.add(meta.duration, 'minutes').format("DD/MM/YYYY").toLocaleString()}{" "}
-                      {startDate.add(meta.duration, 'minutes').format("HH:mm").toLocaleString()}
+                      {startDate
+                        .add(meta.duration, "minutes")
+                        .format("DD/MM/YYYY")
+                        .toLocaleString()}{" "}
+                      {startDate.add(meta.duration, "minutes").format("HH:mm").toLocaleString()}
                     </div>
                   </Stack>
                 </Stack>
@@ -319,7 +320,7 @@ export const CreateExamForm = () => {
                 <Stack
                   style={{
                     margin: 0,
-                    padding: 0
+                    padding: 0,
                   }}
                 >
                   <Typography variant="h6">Date & Time</Typography>
@@ -343,7 +344,7 @@ export const CreateExamForm = () => {
               </Stack>
             </Grid>
 
-            <CardHeader subheader="Please fill questions" title="Fill Questions" />
+            <CardHeader subheader="Please fill following fields" title="Fill Questions" />
             <Divider
               style={{
                 width: "95%",
@@ -499,3 +500,4 @@ export const CreateExamForm = () => {
     </form>
   );
 };
+

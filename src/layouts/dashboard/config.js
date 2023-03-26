@@ -10,6 +10,7 @@ import { SvgIcon } from '@mui/material';
 
 export const items = [
   {
+    type: 'student',
     title: 'Overview',
     path: '/',
     icon: (
@@ -19,6 +20,17 @@ export const items = [
     )
   },
   {
+    type: 'student',
+    title: 'Join Exam',
+    path: '/exam/join',
+    icon: (
+      <SvgIcon fontSize="small">
+        <UserIcon />
+      </SvgIcon>
+    )
+  },
+  {
+    type: 'student',
     title: 'Account',
     path: '/account',
     icon: (
@@ -28,6 +40,7 @@ export const items = [
     )
   },
   {
+    type: 'teacher',
     title: 'Create Exam',
     path: '/exam/create',
     icon: (
@@ -37,57 +50,12 @@ export const items = [
     )
   },
   {
-    title: 'Customers',
+    type: 'teacher',
+    title: 'Exam Results',
     path: '/customers',
     icon: (
       <SvgIcon fontSize="small">
         <UsersIcon />
-      </SvgIcon>
-    )
-  },
-  {
-    title: 'Companies',
-    path: '/companies',
-    icon: (
-      <SvgIcon fontSize="small">
-        <ShoppingBagIcon />
-      </SvgIcon>
-    )
-  },
-  
-  {
-    title: 'Settings',
-    path: '/settings',
-    icon: (
-      <SvgIcon fontSize="small">
-        <CogIcon />
-      </SvgIcon>
-    )
-  },
-  {
-    title: 'Login',
-    path: '/auth/login',
-    icon: (
-      <SvgIcon fontSize="small">
-        <LockClosedIcon />
-      </SvgIcon>
-    )
-  },
-  {
-    title: 'Register',
-    path: '/auth/register',
-    icon: (
-      <SvgIcon fontSize="small">
-        <UserPlusIcon />
-      </SvgIcon>
-    )
-  },
-  {
-    title: 'Error',
-    path: '/404',
-    icon: (
-      <SvgIcon fontSize="small">
-        <XCircleIcon />
       </SvgIcon>
     )
   }

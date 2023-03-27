@@ -104,10 +104,10 @@ export const TopNav = (props) => {
               sx={{
                 cursor: 'pointer',
                 height: 40,
-                width: 40
+                width: 40,
+                backgroundColor: "#3f51b5",
               }}
-              src="/assets/avatars/avatar-anika-visser.png"
-            />
+            > SK </Avatar>
           </Stack>
         </Stack>
       </Box>

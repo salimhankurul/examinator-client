@@ -1,59 +1,59 @@
-import { createContext, useContext, useEffect, useReducer, useRef } from 'react';
-import PropTypes from 'prop-types';
+import { createContext, useContext, useEffect, useReducer, useRef } from "react";
+import PropTypes from "prop-types";
+import { loginRequest, logoutRequest } from "src/api/auth";
 
 const HANDLERS = {
-  INITIALIZE: 'INITIALIZE',
-  SIGN_IN: 'SIGN_IN',
-  SIGN_OUT: 'SIGN_OUT'
+  INITIALIZE: "INITIALIZE",
+  SIGN_IN: "SIGN_IN",
+  SIGN_OUT: "SIGN_OUT",
 };
 
 const initialState = {
   isAuthenticated: false,
   isLoading: true,
-  user: null
+  user: null,
 };
 
 const handlers = {
   [HANDLERS.INITIALIZE]: (state, action) => {
-    const user = action.payload;
+    const { user , session } = action.payload;
+
+    if (user && session) {
+      return {
+        ...state,
+        isAuthenticated: true,
+        isLoading: false,
+        user,
+        session,
+      }
+    }
 
     return {
       ...state,
-      ...(
-        // if payload (user) is provided, then is authenticated
-        user
-          ? ({
-            isAuthenticated: true,
-            isLoading: false,
-            user
-          })
-          : ({
-            isLoading: false
-          })
-      )
-    };
+      isLoading: false,
+    }
   },
   [HANDLERS.SIGN_IN]: (state, action) => {
-    const user = action.payload;
-
+    const { user , session } = action.payload;
     return {
       ...state,
       isAuthenticated: true,
-      user
+      user,
+      session,
     };
   },
   [HANDLERS.SIGN_OUT]: (state) => {
     return {
       ...state,
       isAuthenticated: false,
-      user: null
+      user: null,
+      session: null,
     };
-  }
+  },
 };
 
-const reducer = (state, action) => (
-  handlers[action.type] ? handlers[action.type](state, action) : state
-);
+const reducer = (state, action) =>
+  handlers[action.type] ? handlers[action.type](state, action) : state;
 
 // The role of this context is to propagate authentication state through the App tree.
 
@@ -72,31 +72,19 @@ export const AuthProvider = (props) => {
 
     initialized.current = true;
 
-    let isAuthenticated = false;
+    const session = window.localStorage.getItem("session");
+    const user = window.localStorage.getItem("user");
 
-    try {
-      isAuthenticated = window.sessionStorage.getItem('authenticated') === 'true';
-    } catch (err) {
-      console.error(err);
-    }
+    console.log(session);
+    console.log(user);
 
-    if (isAuthenticated) {
-      const user = {
-        id: '5e86809283e28b96d2d38537',
-        avatar: '/assets/avatars/avatar-anika-visser.png',
-        name: 'Anika Visser',
-        email: 'anika.visser@devias.io'
-      };
-
-      dispatch({
-        type: HANDLERS.INITIALIZE,
-        payload: user
-      });
-    } else {
-      dispatch({
-        type: HANDLERS.INITIALIZE
-      });
-    }
+    dispatch({
+      type: HANDLERS.INITIALIZE,
+      payload: {
+        user: user ? JSON.parse(user) : null,
+        session: session ? JSON.parse(session): null,
+      },
+    });
   };
 
   useEffect(
@@ -107,57 +95,47 @@ export const AuthProvider = (props) => {
     []
   );
 
-  const skip = () => {
-    try {
-      window.sessionStorage.setItem('authenticated', 'true');
-    } catch (err) {
-      console.error(err);
-    }
-
-    const user = {
-      id: '5e86809283e28b96d2d38537',
-      avatar: '/assets/avatars/avatar-anika-visser.png',
-      name: 'Anika Visser',
-      email: 'anika.visser@devias.io'
-    };
-
-    dispatch({
-      type: HANDLERS.SIGN_IN,
-      payload: user
-    });
-  };
-
   const signIn = async (email, password) => {
-    if (email !== 'demo@devias.io' || password !== 'Password123!') {
-      throw new Error('Please check your email and password');
+    const request = await loginRequest({ email, password });
+
+    if (request.success === false) {
+      throw new Error(request.error.message);
     }
 
+    console.log(request.data);
+
     try {
-      window.sessionStorage.setItem('authenticated', 'true');
+      window.localStorage.setItem("session", JSON.stringify(request.data.session));
+      window.localStorage.setItem("user", JSON.stringify(request.data.user));
     } catch (err) {
       console.error(err);
     }
 
-    const user = {
-      id: '5e86809283e28b96d2d38537',
-      avatar: '/assets/avatars/avatar-anika-visser.png',
-      name: 'Anika Visser',
-      email: 'anika.visser@devias.io'
-    };
-
     dispatch({
       type: HANDLERS.SIGN_IN,
-      payload: user
+      payload: {
+        user: request.data.user,
+        session: request.data.session,
+      },
     });
   };
 
   const signUp = async (email, name, password) => {
-    throw new Error('Sign up is not implemented');
+    throw new Error("Sign up is not implemented");
   };
 
-  const signOut = () => {
+  const signOut = async () => {
+    const request = await logoutRequest({ userId: state.user.userId, accessToken: state.session.accessToken });
+
+    if (request.success === false) {
+      throw new Error(request.error.message);
+    }
+
+    window.localStorage.removeItem("session");
+    window.localStorage.removeItem("user");
+   
     dispatch({
-      type: HANDLERS.SIGN_OUT
+      type: HANDLERS.SIGN_OUT,
     });
   };
 
@@ -165,10 +143,9 @@ export const AuthProvider = (props) => {
     <AuthContext.Provider
       value={{
         ...state,
-        skip,
         signIn,
         signUp,
-        signOut
+        signOut,
       }}
     >
       {children}
@@ -177,7 +154,7 @@ export const AuthProvider = (props) => {
 };
 
 AuthProvider.propTypes = {
-  children: PropTypes.node
+  children: PropTypes.node,
 };
 
 export const AuthConsumer = AuthContext.Consumer;

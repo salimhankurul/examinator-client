@@ -1,0 +1,1 @@
+export const EXAM_API_URL = 'https://kfptr82hud.execute-api.eu-west-1.amazonaws.com'

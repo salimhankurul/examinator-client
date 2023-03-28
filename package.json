@@ -2,7 +2,10 @@
   "name": "examinator-client",
   "version": "2.0.1",
   "dependencies": {
+    "@emotion/react": "^11.10.6",
+    "@emotion/styled": "^11.10.6",
     "@fortawesome/fontawesome-free": "5.15.2",
+    "@mui/material": "^5.11.14",
     "@types/jest": "29.5.0",
     "@types/node": "18.15.3",
     "@types/react": "18.0.28",

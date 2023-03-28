@@ -15,6 +15,7 @@ import ResetPassword from './pages/auth-reset-password'
 import DashboardLayout from './pages/Dashboard'
 import ProfileLayout from './pages/user-profile'
 import ExamsLayout from './pages/user-exams'
+import CreateExam from './pages/create-exam'
 
 import { AuthProvider } from './global'
 
@@ -31,7 +32,7 @@ function PrivateRoute({ children }: any) {
 
   if (!accessToken) {
     console.log('localStorage::accessToken is null, redirect to login')
-    return <Navigate to="/login" />
+    return <Navigate to='/login' />
   }
 
   const accessTokenData = jwt(accessToken) as TokenMetaData
@@ -47,7 +48,7 @@ function PrivateRoute({ children }: any) {
   if (!accessTokenAuth) {
     console.log('useAuth::auth is null, set it')
     privateRouteRefreshInit(accessToken, accessTokenData)
-    return <Navigate to="/" />
+    return <Navigate to='/' />
   }
 
   return children
@@ -58,12 +59,12 @@ function App() {
     <BrowserRouter>
       <AuthProvider>
         <Routes>
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path='/login' element={<LoginPage />} />
+          <Route path='/forgot-password' element={<ForgotPassword />} />
+          <Route path='/reset-password' element={<ResetPassword />} />
 
           <Route
-            path="/"
+            path='/'
             element={
               <PrivateRoute>
                 <DashboardLayout />
@@ -71,7 +72,7 @@ function App() {
             }
           />
           <Route
-            path="/exams"
+            path='/exams'
             element={
               <PrivateRoute>
                 <ExamsLayout />
@@ -79,10 +80,18 @@ function App() {
             }
           />
           <Route
-            path="/profile"
+            path='/profile'
             element={
               <PrivateRoute>
                 <ProfileLayout />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path='/create-exam'
+            element={
+              <PrivateRoute>
+                <CreateExam />
               </PrivateRoute>
             }
           />

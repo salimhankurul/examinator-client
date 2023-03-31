@@ -2,8 +2,11 @@ import Head from "next/head";
 import { Box, Container, Stack, Typography } from "@mui/material";
 import { CreateExamForm } from "src/sections/exam/create-exam-form";
 import { Layout as DashboardLayout } from "src/layouts/dashboard/layout";
+import { useAuthContext } from "src/contexts/auth-context";
 
 const Page = () => {
+  const auth = useAuthContext();
+
   return (
     <>
       <Head>
@@ -19,7 +22,7 @@ const Page = () => {
         <Container maxWidth="lg">
           <Stack spacing={3}>
             <Typography variant="h4">Create Exam</Typography>
-            <CreateExamForm/>
+            <CreateExamForm auth={auth}/>
           </Stack>
         </Container>
       </Box>

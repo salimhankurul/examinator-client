@@ -14,13 +14,10 @@ import {
   Typography,
   Button,
 } from "@mui/material";
-import { useExamContext } from "src/contexts/exam-context";
 
 export const CompanyCard = (props) => {
   const { exam } = props;
   const router = useRouter();
-  const { setExam } = useExamContext();
-
   return (
     <Card
       sx={{
@@ -70,8 +67,7 @@ export const CompanyCard = (props) => {
           <Button
             variant="outlined"
             onClick={() => {
-              setExam(exam);
-              router.push("/exam/session");
+              router.push("/exam/session?examId=" + exam.examId);
             }}
           >
             Start

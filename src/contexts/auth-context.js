@@ -128,7 +128,7 @@ export const AuthProvider = (props) => {
     const request = await logoutRequest({ userId: state.user.userId, accessToken: state.session.accessToken });
 
     if (request.success === false) {
-      throw new Error(request.error.message);
+      console.log(request.error.message);
     }
 
     window.localStorage.removeItem("session");

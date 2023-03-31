@@ -1,10 +1,9 @@
 import Head from "next/head";
 import { useCallback, useState, useEffect } from "react";
 import { Layout as DashboardLayout } from "src/layouts/dashboard/layout";
-import { useExamContext } from "src/contexts/exam-context";
-import { useRouter } from 'next/router';
-
+import { useRouter } from "next/router";
 import dayjs from "dayjs";
+import queryString from "query-string";
 import {
   Button,
   Card,
@@ -210,8 +209,6 @@ const questions = [
 const Page = () => {
   const router = useRouter();
 
-  const { exam } = useExamContext();
-
   const [answers, setAnswers] = useState({}); // initialize answers object as an empty object
 
   const [page, setPage] = useState(1); // initialize page number to 1
@@ -219,14 +216,9 @@ const Page = () => {
   const startIndex = (page - 1) * 1;
   const endIndex = startIndex + 1;
 
-  useEffect(
-    () => {
-      if (!exam) {
-        router.push('/exams');
-      }
-    },
-    [exam]
-  );
+  useEffect(() => {
+    console.log(queryString.parse(document.location.search));
+  }, []);
 
   const handleSubmit = () => {
     // TODO: implement exam submission logic
@@ -263,12 +255,16 @@ const Page = () => {
             ))}
           </RadioGroup>
         </Grid>
-        <Grid item xs={2} style={{
-          display: 'flex',
-          alignItems: 'flex-end',
-          justifyContent: 'center'
-        }}>
-          <Typography variant="h6" gutterBottom style={{ color: "red", fontFamily: 'Monaco' }}>
+        <Grid
+          item
+          xs={2}
+          style={{
+            display: "flex",
+            alignItems: "flex-end",
+            justifyContent: "center",
+          }}
+        >
+          <Typography variant="h6" gutterBottom style={{ color: "red", fontFamily: "Monaco" }}>
             Saved
           </Typography>
         </Grid>
@@ -308,7 +304,7 @@ const Page = () => {
         Exam
       </Typography>
       <Card variant="outlined">
-        <CardHeader subheader={exam.courseId} title={exam.examName} />
+        <CardHeader subheader={"exam.courseId"} title={"exam.examName"} />
         <Divider />
         <CardContent>
           <Grid container spacing={3}>

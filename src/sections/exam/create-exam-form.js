@@ -40,13 +40,8 @@ import { createExamRequest } from "src/api/exam";
 import { courses } from "src/layouts/dashboard/config";
 import { useNotificationContext } from "src/contexts/notification-context";
 
-const Alert = React.forwardRef(function Alert(props, ref) {
-  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-});
-
-export const CreateExamForm = ({ auth }) => {
+export const CreateExamForm = ({ auth, meta, setMeta, SetCreated }) => {
   const { showNotify, setNotifyText } = useNotificationContext();
-  const router = useRouter();
 
   // *** pagination size ***
   const [pageWidth, setPageWidth] = useState(window.innerWidth);
@@ -79,17 +74,6 @@ export const CreateExamForm = ({ auth }) => {
 
   const [currentQuestion, setCurrentQuestion] = useState(1);
   const [questions, setQuestions] = useState({});
-  const [meta, setMeta] = useState({
-    courseId: "",
-    courseName: "",
-    examName: "",
-    examDescription: "",
-    minimumPassingScore: 50,
-    duration: 1,
-    randomizeQuestions: true,
-    randomizeAnswers: true,
-    questionCount: 3,
-  });
 
   const [startDate, setStartDate] = useState(dayjs().minute(0).second(0).millisecond(0));
 
@@ -148,7 +132,7 @@ export const CreateExamForm = ({ auth }) => {
 
       await sleep(2000)
 
-      router.push("/404");
+      SetCreated(true)
     },
     [meta, questions, startDate, auth, setNotifyText, showNotify]
   );

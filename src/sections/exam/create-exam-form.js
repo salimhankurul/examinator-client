@@ -119,16 +119,14 @@ export const CreateExamForm = ({ auth, meta, setMeta, SetCreated }) => {
       console.log("request body:");
       console.dir({ body, accessToken }, { depth: null });
 
-      const request = await createExamRequest({ body, accessToken });
+      const response = await createExamRequest({ body, accessToken });
 
-      if (request.success === false) {
+      if (!response.body || response.body.success === false) {
         throw new Error(request.error.message);
       }
 
       setNotifyText("Exam created !"); 
       showNotify(true)
-
-      console.log(request.data);
 
       await sleep(2000)
 

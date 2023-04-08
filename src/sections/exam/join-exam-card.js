@@ -1,7 +1,5 @@
 import PropTypes from "prop-types";
 import { useRouter } from "next/navigation";
-
-import ArrowDownOnSquareIcon from "@heroicons/react/24/solid/ArrowDownOnSquareIcon";
 import ClockIcon from "@heroicons/react/24/solid/ClockIcon";
 import {
   Avatar,
@@ -14,6 +12,8 @@ import {
   Typography,
   Button,
 } from "@mui/material";
+
+import dayjs from "dayjs";
 
 export const CompanyCard = (props) => {
   const { exam } = props;
@@ -40,7 +40,7 @@ export const CompanyCard = (props) => {
           {exam.courseId}
         </Typography>
         <Typography align="center" gutterBottom variant="h5">
-          {exam.examName}
+          {exam.name}
         </Typography>
         <Typography align="center" variant="body1">
           {exam.description}
@@ -60,7 +60,7 @@ export const CompanyCard = (props) => {
             <ClockIcon />
           </SvgIcon>
           <Typography color="text.secondary" display="inline" variant="body2">
-            {exam.startDate}
+            {dayjs(exam.startDate).toISOString()}
           </Typography>
         </Stack>
         <Stack alignItems="center" direction="row" spacing={1}>

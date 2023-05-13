@@ -1,7 +1,5 @@
 import Head from 'next/head';
 import { Box, Container, Stack, Typography } from '@mui/material';
-import { SettingsNotifications } from 'src/sections/settings/settings-notifications';
-import { SettingsPassword } from 'src/sections/account/settings-password';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
 
 const Page = () => (
@@ -23,8 +21,6 @@ const Page = () => (
           <Typography variant="h4">
             Settings
           </Typography>
-          <SettingsNotifications />
-          <SettingsPassword />
         </Stack>
       </Container>
     </Box>

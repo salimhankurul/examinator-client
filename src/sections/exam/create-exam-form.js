@@ -132,7 +132,7 @@ export const CreateExamForm = ({ auth, meta, setMeta, SetCreated }) => {
 
       SetCreated(true)
     },
-    [meta, questions, startDate, auth, setNotifyText, showNotify]
+    [meta, questions, startDate, auth, setNotifyText, showNotify, SetCreated]
   );
 
   const handleChange = useCallback(
@@ -267,8 +267,8 @@ export const CreateExamForm = ({ auth, meta, setMeta, SetCreated }) => {
                         onChange={handleCourseSelection}
                         variant="outlined"
                       >
-                        {courses.map((course) => (
-                          <MenuItem value={course.id}>{course.id + "  " + course.name}</MenuItem>
+                        {courses.map((course, i) => (
+                          <MenuItem key={i} value={course.id}>{course.id + "  " + course.name}</MenuItem>
                         ))}
                       </Select>
                     </FormControl>

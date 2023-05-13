@@ -1,14 +1,4 @@
 {
   "extends": "next/core-web-vitals",
-  "rules": {
-    "@next/next/no-img-element": "off",
-    "jsx-a11y/alt-text": "off",
-    "react/display-name": "off",
-    "react/jsx-max-props-per-line": [
-      5,
-      {
-        "maximum": 5
-      }
-    ]
-  }
+  "rules": {}
 }

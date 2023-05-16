@@ -1,7 +1,10 @@
 import Head from "next/head";
-import { useCallback, useState, useEffect } from "react";
+import { useCallback, useState, useEffect, useRef } from "react";
 import { Layout as DashboardLayout } from "src/layouts/dashboard/layout";
 import { useRouter } from "next/router";
+import { useAuthContext } from "src/contexts/auth-context";
+import { joinExamRequest, submitExamRequest } from "src/api/exam";
+
 import dayjs from "dayjs";
 import queryString from "query-string";
 import {
@@ -28,203 +31,77 @@ import {
   Container,
 } from "@mui/material";
 
-const questions = [
-  {
-    id: 1,
-    question: "What is the smallest country in the world?",
-    options: [
-      { id: 1, text: "Monaco" },
-      { id: 2, text: "San Marino" },
-      { id: 3, text: "Liechtenstein" },
-      { id: 4, text: "Vatican City" },
-    ],
-    answer: 4,
-  },
-  {
-    id: 2,
-    question: "What is the largest continent?",
-    options: [
-      { id: 1, text: "Asia" },
-      { id: 2, text: "Africa" },
-      { id: 3, text: "North America" },
-      { id: 4, text: "Antarctica" },
-    ],
-    answer: 1,
-  },
-  {
-    id: 3,
-    question: "Who wrote the novel '1984'?",
-    options: [
-      { id: 1, text: "Ernest Hemingway" },
-      { id: 2, text: "George Orwell" },
-      { id: 3, text: "F. Scott Fitzgerald" },
-      { id: 4, text: "J.D. Salinger" },
-    ],
-    answer: 2,
-  },
-  {
-    id: 4,
-    question: "What is the chemical symbol for iron?",
-    options: [
-      { id: 1, text: "Ag" },
-      { id: 2, text: "Fe" },
-      { id: 3, text: "Au" },
-      { id: 4, text: "Hg" },
-    ],
-    answer: 2,
-  },
-  {
-    id: 5,
-    question: "What is the highest mountain in the world?",
-    options: [
-      { id: 1, text: "Mount Everest" },
-      { id: 2, text: "K2" },
-      { id: 3, text: "Makalu" },
-      { id: 4, text: "Cho Oyu" },
-    ],
-    answer: 1,
-  },
-  {
-    id: 6,
-    question: "Who painted the famous work 'The Persistence of Memory'?",
-    options: [
-      { id: 1, text: "Vincent van Gogh" },
-      { id: 2, text: "Pablo Picasso" },
-      { id: 3, text: "Salvador Dali" },
-      { id: 4, text: "Rembrandt" },
-    ],
-    answer: 3,
-  },
-  {
-    id: 7,
-    question: "What is the capital of Australia?",
-    options: [
-      { id: 1, text: "Sydney" },
-      { id: 2, text: "Melbourne" },
-      { id: 3, text: "Brisbane" },
-      { id: 4, text: "Canberra" },
-    ],
-    answer: 4,
-  },
-  {
-    id: 8,
-    question: "What is the largest organ in the human body?",
-    options: [
-      { id: 1, text: "Heart" },
-      { id: 2, text: "Liver" },
-      { id: 3, text: "Skin" },
-      { id: 4, text: "Brain" },
-    ],
-    answer: 3,
-  },
-  {
-    question: "What is the capital of Turkey?",
-    options: [
-      { id: 1, text: "Ankara" },
-      { id: 2, text: "Istanbul" },
-      { id: 3, text: "Izmir" },
-      { id: 4, text: "Bursa" },
-    ],
-    answer: 1,
-  },
-  {
-    id: 10,
-    question: "Which planet in our solar system has the most moons?",
-    options: [
-      { id: 1, text: "Jupiter" },
-      { id: 2, text: "Saturn" },
-      { id: 3, text: "Neptune" },
-      { id: 4, text: "Uranus" },
-    ],
-    answer: 1,
-  },
-  {
-    id: 11,
-    question: "Who directed the movie 'Forrest Gump'?",
-    options: [
-      { id: 1, text: "Steven Spielberg" },
-      { id: 2, text: "Quentin Tarantino" },
-      { id: 3, text: "Robert Zemeckis" },
-      { id: 4, text: "Christopher Nolan" },
-    ],
-    answer: 3,
-  },
-  {
-    id: 12,
-    question: "What is the currency of Switzerland?",
-    options: [
-      { id: 1, text: "Dollar" },
-      { id: 2, text: "Euro" },
-      { id: 3, text: "Franc" },
-      { id: 4, text: "Pound" },
-    ],
-    answer: 3,
-  },
-  {
-    id: 13,
-    question: "What is the largest animal in the world?",
-    options: [
-      { id: 1, text: "Elephant" },
-      { id: 2, text: "Giraffe" },
-      { id: 3, text: "Whale" },
-      { id: 4, text: "Hippopotamus" },
-    ],
-    answer: 3,
-  },
-  {
-    id: 14,
-    question: "What is the chemical symbol for sodium?",
-    options: [
-      { id: 1, text: "Na" },
-      { id: 2, text: "Ne" },
-      { id: 3, text: "Ni" },
-      { id: 4, text: "Nb" },
-    ],
-    answer: 1,
-  },
-  {
-    id: 15,
-    question: "Who invented the telephone?",
-    options: [
-      { id: 1, text: "Thomas Edison" },
-      { id: 2, text: "Alexander Graham Bell" },
-      { id: 3, text: "Nikola Tesla" },
-      { id: 4, text: "Guglielmo Marconi" },
-    ],
-    answer: 2,
-  },
-  {
-    id: 16,
-    question: "What is the highest waterfall in the world?",
-    options: [
-      { id: 1, text: "Niagara Falls" },
-      { id: 2, text: "Angel Falls" },
-      { id: 3, text: "Iguazu Falls" },
-      { id: 4, text: "Victoria Falls" },
-    ],
-    answer: 2,
-  },
-];
-
 const Page = () => {
-  const router = useRouter();
-
-  const [answers, setAnswers] = useState({}); // initialize answers object as an empty object
-
   const [page, setPage] = useState(1); // initialize page number to 1
 
   const startIndex = (page - 1) * 1;
   const endIndex = startIndex + 1;
 
+  const auth = useAuthContext();
+  const ignore = useRef(false);
+  const loaded = useRef(false);
+
+  const [exam, setExam] = useState({});
+  const [questions, setQuestions] = useState([]); // exam questions
+  const [answers, setAnswers] = useState({}); // initialize answers object as an empty object
+  const [token, setToken] = useState(""); // exam-session token
+
   useEffect(() => {
-    console.log(queryString.parse(document.location.search));
-  }, []);
+    // Prevent from calling twice in development mode with React.StrictMode enabled
+    if (ignore.current) {
+      return;
+    }
+
+    ignore.current = true;
+
+    async function fetchData() {
+      const params = queryString.parse(document.location.search);
+
+      if (!params.examId) throw new Error("Exam ID is missing");
+
+      const response = await joinExamRequest({
+        accessToken: auth.session.accessToken,
+        examId: params.examId,
+      });
+
+      if (!response.body || response.body.success === false) {
+        throw new Error(response.body?.message || "Failed to join exam");
+      }
+
+      setQuestions(response.body.examQuestions);
+      setToken(response.body.token);
+      setExam(response.body.exam);
+
+      if (response.body.userAnswers) {
+        setAnswers(response.body.userAnswers)
+      }
+
+      loaded.current = true;
+    }
+
+    fetchData();
+  }, [setQuestions, setToken, setExam, setAnswers]);
 
   const handleSubmit = () => {
     // TODO: implement exam submission logic
   };
 
   const handleAnswerChange = (questionId, optionId) => {
+    async function submit() {
+      const response = await submitExamRequest({
+        accessToken: auth.session.accessToken,
+        examToken: token,
+        questionId,
+        optionId,
+      });
+
+      if (!response.body || response.body.success === false) {
+        throw new Error(response.body?.message || "Failed to join exam");
+      }
+    }
+
+    submit()
+
     setAnswers({ ...answers, [questionId]: optionId }); // update the answers object with the new answer for the specified question
   };
 
@@ -237,20 +114,20 @@ const Page = () => {
       <Grid container xs={12}>
         <Grid item xs={10} key={startIndex + index}>
           <Typography variant="h6" gutterBottom>
-            {startIndex + index + 1}. {question.question}
+            {startIndex + index + 1}. {question.questionText}
           </Typography>
           <RadioGroup
-            aria-label={`Question ${question.id}`}
-            name={`question-${question.id}`}
-            value={getAnswerForQuestion(question.id)}
-            onChange={(event) => handleAnswerChange(question.id, event.target.value)}
+            aria-label={`Question ${question.questionId}`}
+            name={`question-${question.questionId}`}
+            value={getAnswerForQuestion(question.questionId)}
+            onChange={(event) => handleAnswerChange(question.questionId, event.target.value)}
           >
             {question.options.map((option) => (
               <FormControlLabel
-                key={option.id}
-                value={option.id}
+                key={option.optionId}
+                value={option.optionId}
                 control={<Radio />}
-                label={option.text}
+                label={option.optionText}
               />
             ))}
           </RadioGroup>
@@ -264,15 +141,15 @@ const Page = () => {
             justifyContent: "center",
           }}
         >
-          <Typography variant="h6" gutterBottom style={{ color: "red", fontFamily: "Monaco" }}>
-            Saved
-          </Typography>
         </Grid>
       </Grid>
     );
   };
 
   const getPageNumbers = () => {
+    if (!questions) return [1];
+    if (questions.length === 0) return [1];
+
     const pageCount = Math.ceil(questions.length);
     const pageNumbers = [];
 
@@ -301,14 +178,21 @@ const Page = () => {
   return (
     <Container maxWidth="md">
       <Typography variant="h4" align="center" gutterBottom>
-        Exam
+        {exam?.name || ""}
       </Typography>
       <Card variant="outlined">
-        <CardHeader subheader={"exam.courseId"} title={"exam.examName"} />
+        <CardHeader subheader={exam?.courseId || ""} title={exam?.courseName || "..."} />
         <Divider />
         <CardContent>
           <Grid container spacing={3}>
-            {questions.slice(startIndex, endIndex).map((q, index) => renderQuestion(q, index))}
+            {loaded.current && questions ? (
+              questions.slice(startIndex, endIndex).map((q, index) => renderQuestion(q, index))
+            ) : (
+              <Typography variant="h6" align="center" gutterBottom>
+                {" "}
+                Loading...{" "}
+              </Typography>
+            )}
           </Grid>
         </CardContent>
         <Divider />
@@ -322,7 +206,7 @@ const Page = () => {
                   alignItems: "center",
                 }}
               >
-                <div>{getPageNumbers().map(renderPageNumber)}</div>
+                <div>{getPageNumbers().map((i) => renderPageNumber(i))} </div>
               </Stack>
             </Grid>
 

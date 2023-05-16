@@ -80,15 +80,45 @@ const Page = () => {
     );
   };
 
+  const renderLoadedExams = () => {
+    if (exams.length === 0) {
+      return (
+        <>
+          <Grid item md={12} sm={12} xs={12}>
+            <Stack
+              spacing={6}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <SvgIcon sx={{ fontSize: 300 }}>
+                <SyncIcon />
+              </SvgIcon>
+              <Typography variant="h6" sx={{ fontSize: 60, color: "black" }}>
+                NO EXAMS CREATED YET
+              </Typography>
+            </Stack>
+          </Grid>
+        </>
+      );
+    } else {
+      return exams.map((exam) => (
+        <Grid xs={12} md={6} lg={4} key={exam.examId}>
+          <CompanyCard exam={exam} />
+        </Grid>
+      ))
+    }
+  }
+
   const loadedContent = () => {
     return (
       <>
         <Grid container spacing={3}>
-          {exams.map((exam) => (
-            <Grid xs={12} md={6} lg={4} key={exam.examId}>
-              <CompanyCard exam={exam} />
-            </Grid>
-          ))}
+          {
+            renderLoadedExams()
+          }
         </Grid>
       </>
     );

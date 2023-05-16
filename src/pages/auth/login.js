@@ -134,7 +134,7 @@ const Page = () => {
               </Button>
               <Alert color="primary" severity="info" sx={{ mt: 3 }}>
                 <div>
-                  You can use <b>demo@devias.io</b> and password <b>Password123!</b>
+                  You can use <b>admin@examinator.app</b> and password <b>sifre123</b>
                 </div>
               </Alert>
             </form>

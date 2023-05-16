@@ -15,6 +15,7 @@ const now = new Date();
 
 const Page = () => (
   <>
+  <>!!!! THIS PAGE IS WORK IN PROGRESS !!!!</>
     <Head>
       <title>
         Overview | Devias Kit

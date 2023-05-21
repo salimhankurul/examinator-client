@@ -1,11 +1,10 @@
-import Head from "next/head";
-import { useCallback, useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Layout as DashboardLayout } from "src/layouts/dashboard/layout";
 import { useRouter } from "next/router";
 import { useAuthContext } from "src/contexts/auth-context";
+import { useNotificationContext } from "src/contexts/notification-context";
 import { joinExamRequest, submitExamRequest } from "src/api/exam";
 
-import dayjs from "dayjs";
 import queryString from "query-string";
 import {
   Button,
@@ -32,15 +31,14 @@ import {
 } from "@mui/material";
 
 const Page = () => {
-  const [page, setPage] = useState(1); // initialize page number to 1
-
-  const startIndex = (page - 1) * 1;
-  const endIndex = startIndex + 1;
-
+  const { showNotify, setNotifyText } = useNotificationContext();
   const auth = useAuthContext();
-  const ignore = useRef(false);
-  const loaded = useRef(false);
+  const router = useRouter();
 
+
+  const ignore = useRef(false);
+  
+  const [page, setPage] = useState(-1);
   const [exam, setExam] = useState({});
   const [questions, setQuestions] = useState([]); // exam questions
   const [answers, setAnswers] = useState({}); // initialize answers object as an empty object
@@ -76,14 +74,16 @@ const Page = () => {
         setAnswers(response.body.userAnswers)
       }
 
-      loaded.current = true;
+      setPage(1)
     }
 
     fetchData();
   }, [setQuestions, setToken, setExam, setAnswers]);
 
   const handleSubmit = () => {
-    // TODO: implement exam submission logic
+    setNotifyText("Finished Exam !"); 
+    showNotify(true)
+    router.push("/");
   };
 
   const handleAnswerChange = (questionId, optionId) => {
@@ -98,81 +98,99 @@ const Page = () => {
       if (!response.body || response.body.success === false) {
         throw new Error(response.body?.message || "Failed to join exam");
       }
+
+      setAnswers({ ...answers, [questionId]: optionId }); // update the answers object with the new answer for the specified question
+      setNotifyText("Answer submitted !"); 
+      showNotify(true)
     }
 
     submit()
-
-    setAnswers({ ...answers, [questionId]: optionId }); // update the answers object with the new answer for the specified question
   };
 
-  const getAnswerForQuestion = (questionId) => {
-    return answers[questionId] || null;
-  };
+  const renderQuestionCard = () => {
+    if (!questions || questions.length === 0 || page === -1) {
+      return (
+        <Typography variant="h6" align="center" gutterBottom>
+          {" "}...{" "}
+        </Typography>
+      );
+    }
 
-  const renderQuestion = (question, index) => {
+    const currQuestion = page - 1;
+    const question = questions[currQuestion];
+    
+    if (question === undefined) {
+      throw new Error(`Question ${currQuestion} is undefined`);
+    }
+    
     return (
-      <Grid container xs={12}>
-        <Grid item xs={10} key={startIndex + index}>
-          <Typography variant="h6" gutterBottom>
-            {startIndex + index + 1}. {question.questionText}
-          </Typography>
-          <RadioGroup
-            aria-label={`Question ${question.questionId}`}
-            name={`question-${question.questionId}`}
-            value={getAnswerForQuestion(question.questionId)}
-            onChange={(event) => handleAnswerChange(question.questionId, event.target.value)}
-          >
-            {question.options.map((option) => (
-              <FormControlLabel
-                key={option.optionId}
-                value={option.optionId}
-                control={<Radio />}
-                label={option.optionText}
-              />
-            ))}
-          </RadioGroup>
+      <>
+        <Grid container xs={12}>
+          <Grid item xs={10} key={page}>
+            <Typography variant="h6" gutterBottom>
+              {page}. {question.questionText}
+            </Typography>
+            <RadioGroup
+              aria-label={`Question ${question.questionId}`}
+              name={`question-${question.questionId}`}
+              value={answers[question.questionId] || null}
+              onChange={(event) => handleAnswerChange(question.questionId, event.target.value)}
+            >
+              {question.options.map((option) => (
+                <FormControlLabel
+                  key={option.optionId}
+                  value={option.optionId}
+                  control={<Radio />}
+                  label={option.optionText}
+                />
+              ))}
+            </RadioGroup>
+          </Grid>
+          
         </Grid>
-        <Grid
-          item
-          xs={2}
-          style={{
-            display: "flex",
-            alignItems: "flex-end",
-            justifyContent: "center",
-          }}
-        >
-        </Grid>
-      </Grid>
+      </>
     );
+  }
+
+  const isPageAnswered = (pageNumber) => {
+    if (!questions || questions.length === 0 || page === -1) {
+      return false;
+    }
+    const pageQuestion = questions[pageNumber - 1];
+    const isAnswered = Object.keys(answers).includes(pageQuestion.questionId);
+    return isAnswered;
+  }
+
+  const getPageButtons = (pages) => {
+    return pages.map((pageNumber) => {
+      const isAnswered = isPageAnswered(pageNumber);
+      return (
+        <Button
+          sx={{
+            margin: "5px 5px",
+          }}
+          key={pageNumber}
+          variant={isAnswered ? "contained" : "outlined"}
+          onClick={() => setPage(pageNumber)}
+        >
+          {pageNumber}
+        </Button>
+      );
+    });
   };
 
-  const getPageNumbers = () => {
-    if (!questions) return [1];
-    if (questions.length === 0) return [1];
+  const renderQuestionPages = () => {
+    if (!questions || questions.length === 0 || page === -1) {
+     return getPageButtons([1])
+    }
 
-    const pageCount = Math.ceil(questions.length);
     const pageNumbers = [];
 
-    for (let i = 1; i <= pageCount; i++) {
+    for (let i = 1; i <= questions.length; i++) {
       pageNumbers.push(i);
     }
 
-    return pageNumbers;
-  };
-
-  const renderPageNumber = (number) => {
-    return (
-      <Button
-        sx={{
-          margin: "5px 5px",
-        }}
-        key={number}
-        variant={number === page ? "contained" : "outlined"}
-        onClick={() => setPage(number)}
-      >
-        {number}
-      </Button>
-    );
+    return getPageButtons(pageNumbers);
   };
 
   return (
@@ -181,18 +199,11 @@ const Page = () => {
         {exam?.name || ""}
       </Typography>
       <Card variant="outlined">
-        <CardHeader subheader={exam?.courseId || ""} title={exam?.courseName || "..."} />
+        <CardHeader subheader={exam?.courseId || ""} title={exam?.courseName || ""} />
         <Divider />
         <CardContent>
           <Grid container spacing={3}>
-            {loaded.current && questions ? (
-              questions.slice(startIndex, endIndex).map((q, index) => renderQuestion(q, index))
-            ) : (
-              <Typography variant="h6" align="center" gutterBottom>
-                {" "}
-                Loading...{" "}
-              </Typography>
-            )}
+            { renderQuestionCard() }
           </Grid>
         </CardContent>
         <Divider />
@@ -206,7 +217,7 @@ const Page = () => {
                   alignItems: "center",
                 }}
               >
-                <div>{getPageNumbers().map((i) => renderPageNumber(i))} </div>
+                <div>{ renderQuestionPages() } </div>
               </Stack>
             </Grid>
 

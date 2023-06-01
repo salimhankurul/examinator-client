@@ -22,7 +22,7 @@ import { useAuthContext } from "src/contexts/auth-context";
 const Page = () => {
   const router = useRouter();
   const auth = useAuthContext();
-  const [method, setMethod] = useState("email");
+
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -36,7 +36,7 @@ const Page = () => {
     onSubmit: async (values, helpers) => {
       try {
         await auth.signIn(values.email, values.password);
-        router.push("/");
+        router.push("/exam-session/list");
       } catch (err) {
         helpers.setStatus({ success: false });
         helpers.setErrors({ submit: err.message });
@@ -44,10 +44,6 @@ const Page = () => {
       }
     },
   });
-
-  const handleMethodChange = useCallback((event, value) => {
-    setMethod(value);
-  }, []);
 
   return (
     <>

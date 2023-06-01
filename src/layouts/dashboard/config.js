@@ -22,7 +22,7 @@ export const items = [
   {
     type: 'student',
     title: 'Join Exam',
-    path: '/exam/join',
+    path: '/exam-session/list',
     icon: (
       <SvgIcon fontSize="small">
         <UserIcon />
@@ -42,7 +42,7 @@ export const items = [
   {
     type: 'teacher',
     title: 'Create Exam',
-    path: '/exam/create',
+    path: '/exam-create/create',
     icon: (
       <SvgIcon fontSize="small">
         <UserIcon />
@@ -52,7 +52,7 @@ export const items = [
   {
     type: 'teacher',
     title: 'Exam Results',
-    path: '/customers',
+    path: '/exam-results/all',
     icon: (
       <SvgIcon fontSize="small">
         <UsersIcon />

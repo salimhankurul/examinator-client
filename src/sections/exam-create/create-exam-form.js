@@ -40,7 +40,9 @@ import { createExamRequest } from "src/api/exam";
 import { courses } from "src/layouts/dashboard/config";
 import { useNotificationContext } from "src/contexts/notification-context";
 
-export const CreateExamForm = ({ auth, meta, setMeta, SetCreated }) => {
+export const CreateExamForm = ({ auth, meta, setMeta }) => {
+  const router = useRouter();
+
   const { showNotify, setNotifyText } = useNotificationContext();
 
   // *** pagination size ***
@@ -129,10 +131,9 @@ export const CreateExamForm = ({ auth, meta, setMeta, SetCreated }) => {
       showNotify(true)
 
       await sleep(2000)
-
-      SetCreated(true)
+      router.push("/exam-session/list");
     },
-    [meta, questions, startDate, auth, setNotifyText, showNotify, SetCreated]
+    [meta, questions, startDate, auth, setNotifyText, showNotify]
   );
 
   const handleChange = useCallback(

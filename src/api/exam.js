@@ -24,11 +24,13 @@ export const createExamRequest = async ({ body, accessToken }) => {
   }
 };
 
-export const getExamsRequest = async ({ accessToken }) => {
+export const getExamsRequest = async ({ accessToken, type }) => {
   try {
     const request = await axios.post(
       `${EXAM_API_URL}/GET_EXAMS`,
-      {},
+      {
+        type
+      },
       {
         headers: {
           "access-token": accessToken,
@@ -93,3 +95,26 @@ export const submitExamRequest = async ({ accessToken, examToken, questionId, op
   }
 };
 
+
+export const getExamResultRequest = async ({ accessToken, examId }) => {
+  try {
+    const request = await axios.post(
+      `${EXAM_API_URL}/GET_RESULTS`,
+      {
+        examId
+      },
+      {
+        headers: {
+          "access-token": accessToken,
+        },
+      }
+    );
+    return { body: request.data };
+  } catch (error) {
+    if (error.response) {
+      return { body: error.response.data };
+    }
+
+    return { error: error.message };
+  }
+};

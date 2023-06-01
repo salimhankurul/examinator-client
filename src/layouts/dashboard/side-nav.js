@@ -17,6 +17,7 @@ import { Logo } from "src/components/logo";
 import { Scrollbar } from "src/components/scrollbar";
 import { items } from "./config";
 import { SideNavItem } from "./side-nav-item";
+import { fontSize } from "@mui/system";
 
 export const SideNav = (props) => {
   const { open, onClose } = props;
@@ -42,12 +43,15 @@ export const SideNav = (props) => {
           height: "40%",
         }}
       >
-        <Box sx={{ p: 3 }}>
+        <Box sx={{ 
+          p: 3, 
+          display: "flex", 
+          flexDirection: "row" 
+          }}>
           <Box
             component={NextLink}
             href="/"
             sx={{
-              display: "inline-flex",
               height: 32,
               width: 32,
             }}
@@ -56,27 +60,16 @@ export const SideNav = (props) => {
           </Box>
           <Box
             sx={{
-              alignItems: "center",
-              backgroundColor: "rgba(255, 255, 255, 0.04)",
               borderRadius: 1,
               cursor: "pointer",
-              display: "flex",
-              justifyContent: "space-between",
-              mt: 2,
-              p: "12px",
+              pl: 2,
+              pt: 0.5,
+              fontSize: 20,
             }}
           >
-            <div>
-              <Typography color="inherit" variant="subtitle1">
-                Devias
-              </Typography>
-              <Typography color="neutral.400" variant="body2">
-                Production
-              </Typography>
-            </div>
-            <SvgIcon fontSize="small" sx={{ color: "neutral.500" }}>
-              <ChevronUpDownIcon />
-            </SvgIcon>
+            <Typography color="inherit" variant="subtitle1">
+              Examinator
+            </Typography>
           </Box>
         </Box>
         <Divider sx={{ borderColor: "neutral.700" }} />

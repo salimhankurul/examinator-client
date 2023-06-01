@@ -60,18 +60,20 @@ export const CompanyCard = (props) => {
             <ClockIcon />
           </SvgIcon>
           <Typography color="text.secondary" display="inline" variant="body2">
-            {dayjs(exam.startDate).toISOString()}
+            {exam.startDate && dayjs(exam.startDate).toString()}
           </Typography>
         </Stack>
         <Stack alignItems="center" direction="row" spacing={1}>
-          <Button
-            variant="outlined"
-            onClick={() => {
-              router.push("/exam/session?examId=" + exam.examId);
-            }}
-          >
-            Start
-          </Button>
+          {exam.examId && (
+            <Button
+              variant="outlined"
+              onClick={() => {
+                router.push("/exam-session/session?examId=" + exam.examId);
+              }}
+            >
+              Start
+            </Button>
+          )}
         </Stack>
       </Stack>
     </Card>

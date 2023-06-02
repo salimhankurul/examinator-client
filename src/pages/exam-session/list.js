@@ -22,6 +22,8 @@ import { Layout as DashboardLayout } from "src/layouts/dashboard/layout";
 import { CompanyCard } from "src/sections/exam-join/join-exam-card";
 import { getExamsRequest } from "src/api/exam";
 import { useAuthContext } from "src/contexts/auth-context";
+import { useNotificationContext } from "src/contexts/notification-context";
+import { useRouter } from "next/navigation";
 
 const dummyExam = {
   courseId: "There Is No Active Exam",
@@ -36,7 +38,11 @@ const loadingExam = {
 };
 
 const Page = () => {
+  const { showNotify, setNotifyText, setSeverity, setAutoHideDuration } = useNotificationContext();
+
   const auth = useAuthContext();
+  const router = useRouter();
+
   const ignore = useRef(false);
   const loaded = useRef(false);
 
@@ -58,6 +64,7 @@ const Page = () => {
 
       if (!response.body || response.body.success === false) {
         console.log(response.body.message);
+        router.push("/auth/login");
         return;
       }
 

@@ -12,10 +12,12 @@ import {
   Typography,
   Button,
 } from "@mui/material";
-
+import { useNotificationContext } from "src/contexts/notification-context";
 import dayjs from "dayjs";
 
 export const CompanyCard = (props) => {
+  const { showNotify, setNotifyText, setSeverity, setAutoHideDuration } = useNotificationContext();
+
   const { exam } = props;
   const router = useRouter();
   return (
@@ -60,7 +62,7 @@ export const CompanyCard = (props) => {
             <ClockIcon />
           </SvgIcon>
           <Typography color="text.secondary" display="inline" variant="body2">
-            {exam.startDate && dayjs(exam.startDate).format("DD/MM/YYYY HH:mm")}
+            {exam.startDate && dayjs(exam.startDate).format("DD/MMM/YYYY HH:mm")}
           </Typography>
         </Stack>
         <Stack alignItems="center" direction="row" spacing={1}>
@@ -68,10 +70,21 @@ export const CompanyCard = (props) => {
             <Button
               variant="outlined"
               onClick={() => {
-                router.push("/exam-session/session?examId=" + exam.examId);
+                if (exam.startDate > Date.now()) {
+                  setAutoHideDuration(2500);
+                  setSeverity("error");
+                  setNotifyText(
+                    `This exam not started yet! It will start on ${dayjs(exam.startDate).format(
+                      "DD/MMM/YYYY HH:mm"
+                    )}`
+                  );
+                  showNotify(true);
+                } else {
+                  router.push("/exam-session/session?examId=" + exam.examId);
+                }
               }}
             >
-              Start
+              Join
             </Button>
           )}
         </Stack>

@@ -7,9 +7,11 @@ import { Layout as DashboardLayout } from "src/layouts/dashboard/layout";
 import { OneExamResult } from "src/sections/exam-results/one-results-table";
 import { getExamResultRequest } from "src/api/exam";
 import { useAuthContext } from "src/contexts/auth-context";
+import { useRouter } from "next/navigation";
 
 const Page = () => {
   const auth = useAuthContext();
+  const router = useRouter();
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -46,6 +48,7 @@ const Page = () => {
 
       if (!response.body || response.body.success === false) {
         console.log(response.body.message);
+        router.push("/auth/login");
         return;
       }
 
@@ -73,8 +76,8 @@ const Page = () => {
           <Stack spacing={3}>
             <Stack direction="row" justifyContent="space-between" spacing={4}>
               <Stack spacing={1}>
-                <Typography variant="h6">{exam.examId}</Typography>
-                <Typography variant="h4">{exam.courseId} : {exam.courseName} </Typography>           
+                <Typography variant="h6">{exam.examId || 'Please Wait...'}</Typography>
+                <Typography variant="h4"> { loaded.current ? '[' +exam.courseId + '] ' + exam.courseName : 'Loading...'} </Typography>           
               </Stack>    
             </Stack>
             

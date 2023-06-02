@@ -43,7 +43,7 @@ import { useNotificationContext } from "src/contexts/notification-context";
 export const CreateExamForm = ({ auth, meta, setMeta }) => {
   const router = useRouter();
 
-  const { showNotify, setNotifyText } = useNotificationContext();
+  const { showNotify, setNotifyText, setAutoHideDuration, setSeverity } = useNotificationContext();
 
   // *** pagination size ***
   const [pageWidth, setPageWidth] = useState(window.innerWidth);
@@ -125,14 +125,20 @@ export const CreateExamForm = ({ auth, meta, setMeta }) => {
       const response = await createExamRequest({ body, accessToken });
 
       if (!response.body || response.body.success === false) {
-        throw new Error(request.error.message);
+        setAutoHideDuration(2500);
+        setSeverity("error");
+        setNotifyText(response.body?.message || "Something went wrong");
+        showNotify(true);
+      } else {
+        setAutoHideDuration(2500);
+        setSeverity("success");
+        setNotifyText("Exam created !");
+        showNotify(true);
+  
+        await sleep(2000);
+        router.push("/exam-session/list");
       }
 
-      setNotifyText("Exam created !");
-      showNotify(true);
-
-      await sleep(2000);
-      router.push("/exam-session/list");
     },
     [meta, questions, startDate, auth, setNotifyText, showNotify]
   );

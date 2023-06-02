@@ -8,9 +8,11 @@ import { CustomersTable } from "src/sections/exam-results/all-results-table";
 import { applyPagination } from "src/utils/apply-pagination";
 import { getExamsRequest } from "src/api/exam";
 import { useAuthContext } from "src/contexts/auth-context";
+import { useRouter } from "next/navigation";
 
 const Page = () => {
   const auth = useAuthContext();
+  const router = useRouter();
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -42,6 +44,7 @@ const Page = () => {
 
       if (!response.body || response.body.success === false) {
         console.log(response.body.message);
+        router.push("/auth/login");
         return;
       }
 

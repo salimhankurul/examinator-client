@@ -31,7 +31,7 @@ import {
 } from "@mui/material";
 
 const Page = () => {
-  const { showNotify, setNotifyText } = useNotificationContext();
+  const { showNotify, setNotifyText, setSeverity, setAutoHideDuration } = useNotificationContext();
   const auth = useAuthContext();
   const router = useRouter();
 
@@ -63,6 +63,11 @@ const Page = () => {
       });
 
       if (!response.body || response.body.success === false) {
+        // setAutoHideDuration(2500)
+        // setSeverity('error')
+        // setNotifyText(response.body.message); 
+        // showNotify(true)
+        // router.push("/exam-session/list");
         throw new Error(response.body?.message || "Failed to join exam");
       }
 

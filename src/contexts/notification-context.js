@@ -14,6 +14,8 @@ export const NotificationProvider = (props) => {
 
   const [notifyText, setNotifyText] = useState("false");
   const [open, showNotify] = useState(false);
+  const [severity, setSeverity] = useState("success");
+  const [autoHideDuration, setAutoHideDuration] = useState(1000);
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -28,16 +30,18 @@ export const NotificationProvider = (props) => {
       value={{
         showNotify,
         setNotifyText,
+        setSeverity,
+        setAutoHideDuration,
       }}
     >
       <>
         <Snackbar
           open={open}
-          autoHideDuration={1000}
+          autoHideDuration={autoHideDuration}
           onClose={handleClose}
           anchorOrigin={{ vertical: "top", horizontal: "right" }}
         >
-          <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
+          <Alert onClose={handleClose} severity={severity} sx={{ width: "100%" }}>
             {notifyText}
           </Alert>
         </Snackbar>

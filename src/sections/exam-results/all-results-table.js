@@ -44,11 +44,12 @@ export const CustomersTable = (props) => {
                 <TableCell>Course Name</TableCell>
                 <TableCell>Exam Name</TableCell>
                 <TableCell>Created At</TableCell>
+                <TableCell>Finished At</TableCell>
                 <TableCell>Show Results</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {items.map((exam) => {
+              {items.sort((a, b) => b.startDate - a.startDate).map((exam) => {
                 return (
                   <TableRow hover key={exam.examId}>
                     <TableCell>
@@ -58,7 +59,8 @@ export const CustomersTable = (props) => {
                     </TableCell>
                     <TableCell>{exam.courseName}</TableCell>
                     <TableCell>{exam.name}</TableCell>
-                    <TableCell>{dayjs(exam.startDate).toString()}</TableCell>
+                    <TableCell>{dayjs(exam.startDate).format('DD/MM/YYYY HH:mm')}</TableCell>
+                    <TableCell>{dayjs(exam.endDate).format('DD/MM/YYYY HH:mm')}</TableCell>
                     <TableCell>
                       <Button
                         color="primary"

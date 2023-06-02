@@ -22,19 +22,17 @@ import { Layout as DashboardLayout } from "src/layouts/dashboard/layout";
 import { CompanyCard } from "src/sections/exam-join/join-exam-card";
 import { getExamsRequest } from "src/api/exam";
 import { useAuthContext } from "src/contexts/auth-context";
-import SyncIcon from "@mui/icons-material/Sync";
-
 
 const dummyExam = {
-  courseId: 'No Exam',
-  name: "Created Yet",
-  description: "Please try again later",
+  courseId: "There Is No Active Exam",
+  name: "",
+  description: "Please try again later...",
 };
 
 const loadingExam = {
-  courseId: 'Loading...',
+  courseId: "Loading...",
   name: "",
-  description: "Please wait loading exams",
+  description: "Please wait...",
 };
 
 const Page = () => {

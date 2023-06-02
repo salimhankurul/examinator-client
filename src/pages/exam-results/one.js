@@ -1,7 +1,6 @@
 import { useCallback, useMemo, useState, useEffect, useRef } from "react";
 import Head from "next/head";
 import queryString from "query-string";
-import dayjs from "dayjs";
 
 import { Box, Button, Container, Stack, SvgIcon, Typography } from "@mui/material";
 import { Layout as DashboardLayout } from "src/layouts/dashboard/layout";
@@ -86,6 +85,7 @@ const Page = () => {
               onRowsPerPageChange={handleRowsPerPageChange}
               page={page}
               rowsPerPage={rowsPerPage}
+              totalPoints={exam.totalPoints}
             />
 
           </Stack>

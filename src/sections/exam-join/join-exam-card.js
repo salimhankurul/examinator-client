@@ -60,7 +60,7 @@ export const CompanyCard = (props) => {
             <ClockIcon />
           </SvgIcon>
           <Typography color="text.secondary" display="inline" variant="body2">
-            {exam.startDate && dayjs(exam.startDate).toString()}
+            {exam.startDate && dayjs(exam.startDate).format("DD/MM/YYYY HH:mm")}
           </Typography>
         </Stack>
         <Stack alignItems="center" direction="row" spacing={1}>

@@ -1,5 +1,4 @@
 import PropTypes from "prop-types";
-import dayjs from "dayjs";
 import {
   Avatar,
   Box,
@@ -16,10 +15,14 @@ import {
   Button,
   SvgIcon,
 } from "@mui/material";
-import ArrowDownOnSquareIcon from "@heroicons/react/24/solid/ArrowDownOnSquareIcon";
+import { SeverityPill } from "src/components/severity-pill";
 
 import { Scrollbar } from "src/components/scrollbar";
-import { getInitials } from "src/utils/get-initials";
+
+const statusMap = {
+  passed: "success",
+  failed: "error",
+};
 
 export const OneExamResult = (props) => {
   const {
@@ -29,6 +32,7 @@ export const OneExamResult = (props) => {
     onRowsPerPageChange,
     page = 0,
     rowsPerPage = 0,
+    totalPoints = 0,
   } = props;
 
   return (
@@ -46,6 +50,7 @@ export const OneExamResult = (props) => {
             </TableHead>
             <TableBody>
               {items.map((result) => {
+                const status = result.userIsPassed ? "passed" : "failed";
                 return (
                   <TableRow hover key={result.userId}>
                     <TableCell>
@@ -53,9 +58,16 @@ export const OneExamResult = (props) => {
                         <Typography variant="subtitle2">{result.universityPersonalId}</Typography>
                       </Stack>
                     </TableCell>
-                    <TableCell>{result.userFirstName} {result.userLastName}</TableCell>
-                    <TableCell>{result.userScore}</TableCell>
-                    <TableCell>{result.userIsPassed ? 'true' : 'false'}</TableCell>
+                    <TableCell>
+                      {result.userFirstName} {result.userLastName}
+                    </TableCell>
+                    <TableCell>
+                      {result.userScore}/{totalPoints}
+                    </TableCell>
+
+                    <TableCell>
+                      <SeverityPill color={statusMap[status]}>{status}</SeverityPill>
+                    </TableCell>
                   </TableRow>
                 );
               })}
@@ -83,4 +95,5 @@ OneExamResult.propTypes = {
   onRowsPerPageChange: PropTypes.func,
   page: PropTypes.number,
   rowsPerPage: PropTypes.number,
+  totalPoints: PropTypes.number,
 };

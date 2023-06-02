@@ -102,6 +102,7 @@ export const CreateExamForm = ({ auth, meta, setMeta }) => {
         return {
           questionText,
           options,
+          points: parseInt(question.points),
         };
       });
 
@@ -127,10 +128,10 @@ export const CreateExamForm = ({ auth, meta, setMeta }) => {
         throw new Error(request.error.message);
       }
 
-      setNotifyText("Exam created !"); 
-      showNotify(true)
+      setNotifyText("Exam created !");
+      showNotify(true);
 
-      await sleep(2000)
+      await sleep(2000);
       router.push("/exam-session/list");
     },
     [meta, questions, startDate, auth, setNotifyText, showNotify]
@@ -187,6 +188,7 @@ export const CreateExamForm = ({ auth, meta, setMeta }) => {
         question = {
           question: "",
           correctOption: "A",
+          points: 10,
           options: {
             A: "",
             B: "",
@@ -200,6 +202,8 @@ export const CreateExamForm = ({ auth, meta, setMeta }) => {
         question.question = event.target.value;
       } else if (event.target.name === "correctOption") {
         question.correctOption = event.target.value;
+      } else if (event.target.name === "points") {
+        question.points = event.target.value;
       } else {
         question.options[event.target.name] = event.target.value;
       }
@@ -223,6 +227,7 @@ export const CreateExamForm = ({ auth, meta, setMeta }) => {
         C: loremIpsum({ count: 1, units: "sentences" }),
         D: loremIpsum({ count: 1, units: "sentences" }),
       },
+      points: Math.floor(Math.random() * 10) + 1,
     };
     console.log(random);
     console.log(currentQuestion);
@@ -269,7 +274,9 @@ export const CreateExamForm = ({ auth, meta, setMeta }) => {
                         variant="outlined"
                       >
                         {courses.map((course, i) => (
-                          <MenuItem key={i} value={course.id}>{course.id + "  " + course.name}</MenuItem>
+                          <MenuItem key={i} value={course.id}>
+                            {course.id + "  " + course.name}
+                          </MenuItem>
                         ))}
                       </Select>
                     </FormControl>
@@ -341,12 +348,12 @@ export const CreateExamForm = ({ auth, meta, setMeta }) => {
                         }}
                       >
                         <Typography variant="h6">Minimum Passing Score</Typography>
-                        <Typography variant="h6">{meta.minimumPassingScore}%</Typography>
+                        <Typography variant="h6">{meta.minimumPassingScore}</Typography>
                       </Stack>
                       <Slider
                         aria-label="Small steps"
                         defaultValue={85}
-                        step={5}
+                        step={1}
                         marks
                         min={0}
                         max={100}
@@ -461,11 +468,9 @@ export const CreateExamForm = ({ auth, meta, setMeta }) => {
                 </Grid>
                 <Grid xs={2}>
                   <Stack
-                    spacing={3}
+                    spacing={1}
                     style={{
                       display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
                     }}
                   >
                     <InputLabel id="demo-simple-select-label">Correct Option</InputLabel>
@@ -476,15 +481,22 @@ export const CreateExamForm = ({ auth, meta, setMeta }) => {
                       label="Correct Option"
                       name="correctOption"
                       onChange={handleQuestionChange}
-                      style={{
-                        marginTop: 60,
-                      }}
+                      style={{}}
                     >
                       <MenuItem value={"A"}>A</MenuItem>
                       <MenuItem value={"B"}>B</MenuItem>
                       <MenuItem value={"C"}>C</MenuItem>
                       <MenuItem value={"D"}>D</MenuItem>
                     </Select>
+                    <InputLabel id="demo-simple-select-label">Points</InputLabel>
+                    <TextField
+                      fullWidth
+                      label=""
+                      name="points"
+                      variant="filled"
+                      onChange={handleQuestionChange}
+                      value={questions[currentQuestion] ? questions[currentQuestion].points : ""}
+                    />
                   </Stack>
                 </Grid>
               </Grid>

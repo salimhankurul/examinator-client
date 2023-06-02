@@ -25,7 +25,7 @@ const Page = () => {
               {auth.user.firstName || ""} {auth.user.lastName || ""} | Account
             </Typography>
             <Grid xs={12} md={12} lg={12}>
-              <MyExams exams={Object.values(auth.user.exams)} sx={{ height: "100%" }} />
+              {auth?.user?.exams && <MyExams exams={Object.values(auth.user.exams)} sx={{ height: "100%" }} />}
             </Grid>
           </Grid>
         </Container>

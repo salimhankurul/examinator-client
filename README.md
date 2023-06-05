@@ -16,8 +16,8 @@
 
 ### EXAM SESSION PAGE
 
-![Alt text](https://github.com/salimhankurul/examinator-client/blob/main/readme-imgs/Screenshot%202023-06-05%20at%2021.21.13.png?raw=true)  
-![Alt text](https://github.com/salimhankurul/examinator-client/blob/main/readme-imgs/Screenshot%202023-06-05%20at%2021.21.37.png?raw=true)
+![Alt text](https://github.com/salimhankurul/examinator-client/blob/main/readme-imgs/Screenshot%202023-06-05%20at%2022.12.18.png?raw=true)  
+![Alt text](https://github.com/salimhankurul/examinator-client/blob/main/readme-imgs/Screenshot%202023-06-05%20at%2022.12.42.png?raw=true)
 
 ### EXAM RESULTS PAGE
 

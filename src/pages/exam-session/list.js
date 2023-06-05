@@ -91,7 +91,7 @@ const Page = () => {
             <Divider />
             <CardContent>
               <Grid container spacing={3}>
-                {exams.map((exam) => (
+                {exams.sort((a, b) => a.startDate - b.startDate).map((exam) => (
                   <Grid xs={12} md={6} lg={4} key={exam.examId}>
                     <CompanyCard exam={exam} />
                   </Grid>

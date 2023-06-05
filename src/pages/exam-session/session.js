@@ -4,7 +4,6 @@ import { useRouter } from "next/router";
 import { useAuthContext } from "src/contexts/auth-context";
 import { useNotificationContext } from "src/contexts/notification-context";
 import { joinExamRequest, submitExamRequest } from "src/api/exam";
-
 import queryString from "query-string";
 import {
   Button,
@@ -30,14 +29,15 @@ import {
   Container,
 } from "@mui/material";
 
+import { CountdownCircleTimer } from "react-countdown-circle-timer";
+
 const Page = () => {
   const { showNotify, setNotifyText, setSeverity, setAutoHideDuration } = useNotificationContext();
   const auth = useAuthContext();
   const router = useRouter();
 
-
   const ignore = useRef(false);
-  
+
   const [page, setPage] = useState(-1);
   const [exam, setExam] = useState({});
   const [questions, setQuestions] = useState([]); // exam questions
@@ -65,7 +65,7 @@ const Page = () => {
       if (!response.body || response.body.success === false) {
         // setAutoHideDuration(2500)
         // setSeverity('error')
-        // setNotifyText(response.body.message); 
+        // setNotifyText(response.body.message);
         // showNotify(true)
         // router.push("/exam-session/list");
         throw new Error(response.body?.message || "Failed to join exam");
@@ -76,18 +76,18 @@ const Page = () => {
       setExam(response.body.exam);
 
       if (response.body.userAnswers) {
-        setAnswers(response.body.userAnswers)
+        setAnswers(response.body.userAnswers);
       }
 
-      setPage(1)
+      setPage(1);
     }
 
     fetchData();
   }, [setQuestions, setToken, setExam, setAnswers]);
 
   const handleSubmit = () => {
-    setNotifyText("Finished Exam !"); 
-    showNotify(true)
+    setNotifyText("Finished Exam !");
+    showNotify(true);
     router.push("/");
   };
 
@@ -105,29 +105,30 @@ const Page = () => {
       }
 
       setAnswers({ ...answers, [questionId]: optionId }); // update the answers object with the new answer for the specified question
-      setNotifyText("Answer submitted !"); 
-      showNotify(true)
+      setNotifyText("Answer submitted !");
+      showNotify(true);
     }
 
-    submit()
+    submit();
   };
 
   const renderQuestionCard = () => {
     if (!questions || questions.length === 0 || page === -1) {
       return (
         <Typography variant="h6" align="center" gutterBottom>
-          {" "}...{" "}
+          {" "}
+          ...{" "}
         </Typography>
       );
     }
 
     const currQuestion = page - 1;
     const question = questions[currQuestion];
-    
+
     if (question === undefined) {
       throw new Error(`Question ${currQuestion} is undefined`);
     }
-    
+
     return (
       <>
         <Grid container xs={12}>
@@ -151,11 +152,10 @@ const Page = () => {
               ))}
             </RadioGroup>
           </Grid>
-          
         </Grid>
       </>
     );
-  }
+  };
 
   const isPageAnswered = (pageNumber) => {
     if (!questions || questions.length === 0 || page === -1) {
@@ -164,7 +164,7 @@ const Page = () => {
     const pageQuestion = questions[pageNumber - 1];
     const isAnswered = Object.keys(answers).includes(pageQuestion.questionId);
     return isAnswered;
-  }
+  };
 
   const getPageButtons = (pages) => {
     return pages.map((pageNumber) => {
@@ -186,7 +186,7 @@ const Page = () => {
 
   const renderQuestionPages = () => {
     if (!questions || questions.length === 0 || page === -1) {
-     return getPageButtons([1])
+      return getPageButtons([1]);
     }
 
     const pageNumbers = [];
@@ -198,52 +198,96 @@ const Page = () => {
     return getPageButtons(pageNumbers);
   };
 
-  return (
-    <Container maxWidth="md">
-      <Typography variant="h4" align="center" gutterBottom>
-        {exam?.name || ""}
-      </Typography>
-      <Card variant="outlined">
-        <CardHeader subheader={exam?.courseId || ""} title={exam?.courseName || ""} />
-        <Divider />
-        <CardContent>
-          <Grid container spacing={3}>
-            { renderQuestionCard() }
-          </Grid>
-        </CardContent>
-        <Divider />
-        <CardActions>
-          <Grid container md={12} sm={12} xs={12} wrap="wrap">
-            <Grid item md={10} sm={10} xs={10}>
-              <Stack
-                style={{
-                  display: "flex",
-                  justifyContent: "flex-start",
-                  alignItems: "center",
-                }}
-              >
-                <div>{ renderQuestionPages() } </div>
-              </Stack>
-            </Grid>
+  const getRemainingTime = (exam) => (exam.endDate - Date.now()) / 1000;
 
-            <Grid item md={2} sm={2} xs={2}>
-              <Stack
-                style={{
+  const renderTime = ({ remainingTime }) => {
+    if (remainingTime === 0) {
+      setNotifyText("Exam Time Finished !");
+      showNotify(true);
+      router.push("/");
+      return
+    }
+
+    const minutes = Math.floor(remainingTime / 60);
+    const seconds = remainingTime % 60;
+
+    return (
+      <div className="timer">
+        <div className="text">Remaining</div>
+        <div className="value">
+          {minutes}:{seconds}
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <>
+      <Container maxWidth="lg">
+        <Typography variant="h4" align="center" gutterBottom>
+          {exam?.name || ""}
+        </Typography>
+        <Card variant="outlined">
+          <CardHeader subheader={exam?.courseId || ""} title={exam?.courseName || ""} />
+          <Divider />
+          <CardContent>
+            <Grid container spacing={3}>
+              <Grid
+                sx={{
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
-                  height: "100%",
                 }}
               >
-                <Button type="submit" variant="contained" color="primary" onClick={handleSubmit}>
-                  Finish
-                </Button>
-              </Stack>
+                {renderQuestionCard()}
+                {exam.endDate && (
+                  <CountdownCircleTimer
+                    isPlaying
+                    duration={getRemainingTime(exam)}
+                    colors={["#004777", "#F7B801", "#A30000", "#A30000"]}
+                    colorsTime={[10, 6, 3, 0]}
+                    onComplete={() => ({ shouldRepeat: true, delay: 1 })}
+                  >
+                    {renderTime}
+                  </CountdownCircleTimer>
+                )}
+              </Grid>
             </Grid>
-          </Grid>
-        </CardActions>
-      </Card>
-    </Container>
+          </CardContent>
+          <Divider />
+          <CardActions>
+            <Grid container md={12} sm={12} xs={12} wrap="wrap">
+              <Grid item md={10} sm={10} xs={10}>
+                <Stack
+                  style={{
+                    display: "flex",
+                    justifyContent: "flex-start",
+                    alignItems: "center",
+                  }}
+                >
+                  <div>{renderQuestionPages()} </div>
+                </Stack>
+              </Grid>
+
+              <Grid item md={2} sm={2} xs={2}>
+                <Stack
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    height: "100%",
+                  }}
+                >
+                  <Button type="submit" variant="contained" color="primary" onClick={handleSubmit}>
+                    Finish
+                  </Button>
+                </Stack>
+              </Grid>
+            </Grid>
+          </CardActions>
+        </Card>
+      </Container>
+    </>
   );
 };
 

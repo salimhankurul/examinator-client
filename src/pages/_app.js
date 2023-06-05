@@ -13,6 +13,7 @@ import { NotificationProvider } from "src/contexts/notification-context";
 const clientSideEmotionCache = createEmotionCache();
 
 const SplashScreen = () => null;
+import "src/theme/timer-style.css";
 
 const App = (props) => {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
